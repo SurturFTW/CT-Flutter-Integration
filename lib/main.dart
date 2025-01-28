@@ -104,16 +104,6 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             ElevatedButton(
               onPressed: _login,
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.deepPurple,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                textStyle: const TextStyle(fontSize: 18),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
               child: const Text('Login'),
             ),
             ElevatedButton(
@@ -124,9 +114,37 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: _inAppEvent,
               child: Text("In-App"),
             ),
+            ElevatedButton(onPressed: _inbox, child: Text('App Inbox'))
           ],
         ),
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    CleverTapPlugin clevertapPlugin = CleverTapPlugin();
+    clevertapPlugin.setCleverTapInboxDidInitializeHandler(inboxDidInitialize);
+  }
+
+  void _inbox() {
+    CleverTapPlugin.initializeInbox();
+  }
+
+  void inboxDidInitialize() {
+    setState(() {
+      print("inboxDidInitialize called");
+      var styleConfig = {
+        'noMessageTextColor': '#FF6600',
+        'noMessageText': 'No message(s) to show.',
+        'navBarTitle': 'App Inbox'
+      };
+      CleverTapPlugin.showInbox(styleConfig);
+    });
+  }
+}
+
+void NotificationButton({required Icon child}) {
+  NotificationButton(child: Icon(Icons.notifications));
 }

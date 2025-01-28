@@ -61,7 +61,7 @@ dependencies{
 
     //Optional AndroidX Media3 Libraries for Audio/Video Inbox Messages. Audio/Video messages will be dropped without these dependencies
 
-    implementation "androidx.media3:media3-exoplayer:1.1.1"
-    implementation "androidx.media3:media3-exoplayer-hls:1.1.1"
-    implementation "androidx.media3:media3-ui:1.1.1"
+    // implementation "androidx.media3:media3-exoplayer:1.1.1"
+    // implementation "androidx.media3:media3-exoplayer-hls:1.1.1"
+    // implementation "androidx.media3:media3-ui:1.1.1"
 }
