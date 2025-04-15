@@ -129,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _inbox() {
+    CleverTapPlugin.recordEvent("App Inbox Event", {});
     CleverTapPlugin.initializeInbox();
   }
 
