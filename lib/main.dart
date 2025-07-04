@@ -8,8 +8,21 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await _requestPermissions();
-  CleverTapPlugin.setDebugLevel(2);
+
+  CleverTapPlugin.onKilledStateNotificationClicked(
+      _onKilledStateNotificationClickedHandler);
+
   runApp(const MyApp());
+}
+
+void pushClickedPayloadReceived(Map<String, dynamic> notificationPayload) {
+  print("pushClickedPayloadReceived called with notification payload: " +
+      notificationPayload.toString());
+}
+
+@pragma('vm:entry-point')
+void _onKilledStateNotificationClickedHandler(Map<String, dynamic> map) async {
+  print("Notification Payload received: " + map.toString());
 }
 
 Future<void> _requestPermissions() async {
@@ -83,6 +96,10 @@ class _MyHomePageState extends State<MyHomePage> {
     CleverTapPlugin.recordEvent("Product Viewed", {});
   }
 
+  void _notificationEvent() {
+    CleverTapPlugin.recordEvent("Notification Event", {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,6 +114,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               onPressed: _login,
               child: const Text('Login'),
+            ),
+            ElevatedButton(
+              onPressed: _notificationEvent,
+              child: Text("Notification Event"),
             ),
             ElevatedButton(
               onPressed: _pushEvent,
@@ -115,8 +136,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    print("CleverTapPlugin initState");
     super.initState();
+
     CleverTapPlugin clevertapPlugin = CleverTapPlugin();
+
+    CleverTapPlugin.setDebugLevel(3);
+    CleverTapPlugin.registerForPush();
+
+    clevertapPlugin.setCleverTapPushClickedPayloadReceivedHandler(
+        pushClickedPayloadReceived);
+
     clevertapPlugin.setCleverTapInboxDidInitializeHandler(inboxDidInitialize);
   }
 
