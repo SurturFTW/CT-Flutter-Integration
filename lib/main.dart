@@ -1,21 +1,21 @@
 import 'package:clevertap_plugin/clevertap_plugin.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 // Import your new files
 import 'native_display_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
   await _requestPermissions();
 
   CleverTapPlugin.onKilledStateNotificationClicked(
       _onKilledStateNotificationClickedHandler);
 
   runApp(const MyApp());
+  await Firebase.initializeApp();
 }
 
 void pushClickedPayloadReceived(Map<String, dynamic> notificationPayload) {
@@ -550,7 +550,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       _buildActionCard(
                         onPressed: _recordNativeDisplayEvent,
                         icon: Icons.display_settings,
-                        label: 'Load Native',
+                        label: 'Native Display',
                         color: Colors.indigo,
                       ),
                       _buildActionCard(
