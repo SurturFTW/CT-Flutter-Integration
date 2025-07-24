@@ -1,8 +1,9 @@
+import CleverTapSDK
+import clevertap_plugin
+
 import Flutter
 import UIKit
 
-import CleverTapSDK
-import clevertap_plugin
 
 @main
 @objc class AppDelegate: FlutterAppDelegate, UNUserNotificationCenterDelegate{
