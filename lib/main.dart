@@ -1,8 +1,10 @@
 import 'package:clevertap_plugin/clevertap_plugin.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'dart:math';
 
 // Import your new files
 import 'native_display_page.dart';
@@ -90,8 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // Profile data
   final Map<String, dynamic> profile = {
     'Name': 'BatMan',
-    'First Name': 'Bat',
-    'Last Name': 'Man',
+    // 'First Name': 'Pushkar',
+    // 'Last Name': 'Sane',
     'Identity': '200',
     'Email': 'Bat@man.com',
     'Phone': '+91123456789',
@@ -113,12 +115,15 @@ class _MyHomePageState extends State<MyHomePage> {
   void _initializeCleverTap() {
     CleverTapPlugin clevertapPlugin = CleverTapPlugin();
 
+    CleverTapPlugin.init("TEST-865-ZRW-7K7Z");
     CleverTapPlugin.setDebugLevel(3);
-    CleverTapPlugin.registerForPush();
+
+    if (!kIsWeb) {
+      CleverTapPlugin.registerForPush();
+    }
 
     clevertapPlugin.setCleverTapPushClickedPayloadReceivedHandler(
         pushClickedPayloadReceived);
-
     clevertapPlugin.setCleverTapInboxDidInitializeHandler(_inboxDidInitialize);
 
     debugPrint("CleverTap basic initialization complete");
@@ -158,10 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Event recording methods
   void _recordNotificationEvent() {
     try {
-      CleverTapPlugin.recordEvent("Notification Event", {
-        'source': 'demo_app',
-        'timestamp': DateTime.now().toIso8601String(),
-      });
+      CleverTapPlugin.recordEvent("Notification Event", {});
       _showSuccessSnackBar("Notification event recorded");
     } catch (e) {
       _showErrorSnackBar("Failed to record notification event: $e");
@@ -175,18 +177,16 @@ class _MyHomePageState extends State<MyHomePage> {
         'product_name': 'Premium Plan',
         'category': 'subscription',
       });
-      _showSuccessSnackBar("Push event recorded");
+      _showSuccessSnackBar("Custom event recorded");
     } catch (e) {
-      _showErrorSnackBar("Failed to record push event: $e");
+      _showErrorSnackBar("Failed to record Custom event: $e");
     }
   }
 
   void _recordInAppEvent() {
     try {
-      CleverTapPlugin.recordEvent("In-App Event", {
-        'screen': 'home',
-        'action': 'button_tap',
-      });
+      CleverTapPlugin.recordEvent("In-App Event", {});
+      // CleverTapPlugin.recordEvent("GFT Remove Cart", {});  // Test for Multi-Instance
       _showSuccessSnackBar("In-App event recorded");
     } catch (e) {
       _showErrorSnackBar("Failed to record in-app event: $e");
@@ -348,6 +348,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _customHTML() {
     CleverTapPlugin.recordEvent("Product View Action", {});
+    _showSuccessSnackBar("Custom HTML event recorded");
+  }
+
+  void _emailEvent() {
+    int randomNumber = 50 + (Random().nextInt(51));
+    CleverTapPlugin.recordEvent("Health", {"Heart Rate": randomNumber});
+    _showSuccessSnackBar(
+        "Email campaign event recorded with HR: $randomNumber");
+  }
+
+  void _linkedContent() {
+    CleverTapPlugin.recordEvent("android Purchase", {});
+    _showSuccessSnackBar("Linked content event recorded");
   }
 
   Widget _buildActionCard({
@@ -363,23 +376,28 @@ class _MyHomePageState extends State<MyHomePage> {
         borderRadius: BorderRadius.circular(12),
         onTap: onPressed,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           child: Column(
+            mainAxisSize: MainAxisSize.min, // Change to min
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 icon,
-                size: 32,
+                size: 24, // Reduced from 32
                 color: onPressed != null ? color : Colors.grey,
               ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: onPressed != null ? Colors.black87 : Colors.grey,
+              const SizedBox(height: 4), // Reduced from 8
+              FittedBox(
+                // Wrap text in FittedBox
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11, // Reduced from 12
+                    fontWeight: FontWeight.w600,
+                    color: onPressed != null ? Colors.black87 : Colors.grey,
+                  ),
                 ),
               ),
             ],
@@ -413,163 +431,183 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                // Header Section
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.analytics_outlined,
-                          size: 48,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'CleverTap Integration Demo',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                        if (_isLoggedIn) ...[
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Header Section
+                  Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.analytics_outlined,
+                            size: 48,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                           const SizedBox(height: 12),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.green),
-                            ),
-                            child: Text(
-                              'Logged in • ID: ${_cleverTapId ?? 'Loading...'}',
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                          Text(
+                            'CleverTap Integration Demo',
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          if (_isLoggedIn) ...[
+                            const SizedBox(height: 12),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Colors.green),
+                              ),
+                              child: Text(
+                                'Logged in • ID: ${_cleverTapId ?? 'Loading...'}',
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
+                      ),
+                    ),
+                  ),
+
+                  // Display Units Status
+                  if (_hasDisplayUnits) ...[
+                    const SizedBox(height: 16),
+                    Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.campaign, color: Colors.green),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'Active Display Units: ${_displayUnits.length}',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+
+                  const SizedBox(height: 24),
+
+                  // Grid of Action Cards
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      children: [
+                        _buildActionCard(
+                          onPressed: _login,
+                          icon: Icons.login,
+                          label: _isLoggedIn ? 'Re-login' : 'Login',
+                          color: Colors.blue,
+                        ),
+                        _buildActionCard(
+                          onPressed: _recordNotificationEvent,
+                          icon: Icons.notifications_active,
+                          label: 'Notification Event',
+                          color: Colors.orange,
+                        ),
+                        _buildActionCard(
+                          onPressed: _recordPushEvent,
+                          icon: Icons.send,
+                          label: 'Push Event',
+                          color: Colors.green,
+                        ),
+                        _buildActionCard(
+                          onPressed: _recordChargedEvent,
+                          icon: Icons.payment,
+                          label: 'Charged Event',
+                          color: Colors.amber[700]!,
+                        ),
+                        _buildActionCard(
+                          onPressed: _recordInAppEvent,
+                          icon: Icons.phone_iphone,
+                          label: 'In-App Event',
+                          color: Colors.purple,
+                        ),
+                        _buildActionCard(
+                          onPressed: _customHTML,
+                          icon: Icons.html,
+                          label: "Custom HTML",
+                          color: Colors.teal,
+                        ),
+                        _buildActionCard(
+                          onPressed: _linkedContent,
+                          icon: Icons.content_copy,
+                          label: 'Linked Content',
+                          color: Colors.green,
+                        ),
+                        _buildActionCard(
+                          onPressed: _openInbox,
+                          icon: Icons.inbox,
+                          label: 'App Inbox',
+                          color: Colors.teal,
+                        ),
+                        _buildActionCard(
+                          onPressed: _recordNativeDisplayEvent,
+                          icon: Icons.display_settings,
+                          label: 'Native Display',
+                          color: Colors.indigo,
+                        ),
+                        _buildActionCard(
+                          onPressed: _emailEvent,
+                          icon: Icons.email,
+                          label: "Email Campaign",
+                          color: Colors.lightBlue,
+                        ),
+                        _buildActionCard(
+                          onPressed: _getAllDisplayUnits,
+                          icon: Icons.view_list,
+                          label: 'Get Units',
+                          color: Colors.cyan,
+                        ),
+                        _buildActionCard(
+                          onPressed: _navigateToNativeDisplayPage,
+                          icon: Icons.open_in_new,
+                          label: 'Native Display Page',
+                          color: Colors.deepOrange,
+                        ),
                       ],
                     ),
                   ),
-                ),
-
-                // Display Units Status
-                if (_hasDisplayUnits) ...[
-                  const SizedBox(height: 16),
-                  Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.campaign, color: Colors.green),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Active Display Units: ${_displayUnits.length}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
-
-                const SizedBox(height: 24),
-
-                // Grid of Action Cards
-                Expanded(
-                  child: GridView.count(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    children: [
-                      _buildActionCard(
-                        onPressed: _login,
-                        icon: Icons.login,
-                        label: _isLoggedIn ? 'Re-login' : 'Login',
-                        color: Colors.blue,
-                      ),
-                      _buildActionCard(
-                        onPressed: _recordNotificationEvent,
-                        icon: Icons.notifications_active,
-                        label: 'Notification Event',
-                        color: Colors.orange,
-                      ),
-                      _buildActionCard(
-                        onPressed: _recordPushEvent,
-                        icon: Icons.send,
-                        label: 'Push Event',
-                        color: Colors.green,
-                      ),
-                      _buildActionCard(
-                        onPressed: _recordChargedEvent,
-                        icon: Icons.payment,
-                        label: 'Charged Event',
-                        color: Colors.amber[700]!,
-                      ),
-                      _buildActionCard(
-                        onPressed: _recordInAppEvent,
-                        icon: Icons.phone_iphone,
-                        label: 'In-App Event',
-                        color: Colors.purple,
-                      ),
-                      _buildActionCard(
-                        onPressed: _customHTML,
-                        icon: Icons.html,
-                        label: "Custom in-app HTML",
-                        color: Colors.teal,
-                      ),
-                      _buildActionCard(
-                        onPressed: _openInbox,
-                        icon: Icons.inbox,
-                        label: 'App Inbox',
-                        color: Colors.teal,
-                      ),
-                      _buildActionCard(
-                        onPressed: _recordNativeDisplayEvent,
-                        icon: Icons.display_settings,
-                        label: 'Native Display',
-                        color: Colors.indigo,
-                      ),
-                      _buildActionCard(
-                        onPressed: _getAllDisplayUnits,
-                        icon: Icons.view_list,
-                        label: 'Get Units',
-                        color: Colors.cyan,
-                      ),
-                      // NEW NAVIGATION BUTTON
-                      _buildActionCard(
-                        onPressed: _navigateToNativeDisplayPage,
-                        icon: Icons.open_in_new,
-                        label: 'Native Display Page',
-                        color: Colors.deepOrange,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
