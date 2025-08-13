@@ -186,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _recordInAppEvent() {
     try {
       CleverTapPlugin.recordEvent("In-App Event", {});
-      // CleverTapPlugin.recordEvent("GFT Remove Cart", {});  // Test for Multi-Instance
+      // CleverTapPlugin.recordEvent("GFT Remove Cart", {}); // Test for Multi-Instance
       _showSuccessSnackBar("In-App event recorded");
     } catch (e) {
       _showErrorSnackBar("Failed to record in-app event: $e");
