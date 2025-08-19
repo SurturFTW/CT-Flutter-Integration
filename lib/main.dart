@@ -8,6 +8,7 @@ import 'dart:math';
 
 // Import your new files
 import 'native_display_page.dart';
+import 'custom_html_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -158,6 +159,18 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e) {
       _showErrorSnackBar("Login failed: $e");
     }
+  }
+
+  // Navigate to Custom HTML Page
+  void _navigateToCustomHTMLPage() {
+    // This event can trigger a custom HTML in-app from your CleverTap dashboard
+    _showSuccessSnackBar("Custom HTML event recorded");
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const CustomHtmlPage(),
+      ),
+    );
   }
 
   // Event recording methods
@@ -602,6 +615,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           icon: Icons.open_in_new,
                           label: 'Native Display Page',
                           color: Colors.deepOrange,
+                        ),
+                        _buildActionCard(
+                          onPressed: _navigateToCustomHTMLPage,
+                          icon: Icons.web,
+                          label: "Custom HTML Page",
+                          color: Colors.redAccent,
                         ),
                       ],
                     ),
