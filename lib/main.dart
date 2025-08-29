@@ -359,11 +359,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _customHTML() {
-    CleverTapPlugin.recordEvent("Product View Action", {});
-    _showSuccessSnackBar("Custom HTML event recorded");
-  }
-
   void _emailEvent() {
     int randomNumber = 50 + (Random().nextInt(51));
     CleverTapPlugin.recordEvent("Health", {"Heart Rate": randomNumber});
@@ -573,12 +568,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           icon: Icons.phone_iphone,
                           label: 'In-App Event',
                           color: Colors.purple,
-                        ),
-                        _buildActionCard(
-                          onPressed: _customHTML,
-                          icon: Icons.html,
-                          label: "Custom HTML",
-                          color: Colors.teal,
                         ),
                         _buildActionCard(
                           onPressed: _linkedContent,
