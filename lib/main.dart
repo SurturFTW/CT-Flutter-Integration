@@ -116,7 +116,13 @@ class _MyHomePageState extends State<MyHomePage> {
   void _initializeCleverTap() {
     CleverTapPlugin clevertapPlugin = CleverTapPlugin();
 
-    CleverTapPlugin.init("TEST-865-ZRW-7K7Z");
+    // Create notification channel ("test") same as dashboard wzrk_cid
+    CleverTapPlugin.createNotificationChannel(
+        "test", // Channel ID (from dashboard payload)
+        "Test Channel", // Channel Name
+        "Channel for timer push notifications", // Description
+        3,
+        true);
     CleverTapPlugin.setDebugLevel(3);
 
     if (!kIsWeb) {

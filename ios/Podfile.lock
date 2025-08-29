@@ -4,6 +4,8 @@ PODS:
   - clevertap_plugin (3.5.0):
     - CleverTap-iOS-SDK (= 7.3.1)
     - Flutter
+  - CTNotificationContent (1.1.0)
+  - CTNotificationService (0.1.7)
   - Firebase/CoreOnly (11.6.0):
     - FirebaseCore (~> 11.6.0)
   - firebase_core (3.10.1):
@@ -35,6 +37,8 @@ PODS:
 DEPENDENCIES:
   - CleverTap-iOS-SDK
   - clevertap_plugin (from `.symlinks/plugins/clevertap_plugin/ios`)
+  - CTNotificationContent
+  - CTNotificationService
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
@@ -43,6 +47,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - CleverTap-iOS-SDK
+    - CTNotificationContent
+    - CTNotificationService
     - Firebase
     - FirebaseCore
     - FirebaseCoreInternal
@@ -64,6 +70,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   CleverTap-iOS-SDK: 05c1860785c898f4f2316df6a207eb0ebd9d890a
   clevertap_plugin: bc694a3566b5012f14798129b3f84665fe89a762
+  CTNotificationContent: c1cab33a5a5bbbc4e4b743acccdfe8605cedd205
+  CTNotificationService: 3eceea27cf0e28a2e14267bb706013363eb620c6
   Firebase: 374a441a91ead896215703a674d58cdb3e9d772b
   firebase_core: e2aa06dbd854d961f8ce46c2e20933bee1bf2d2b
   FirebaseCore: 48b0dd707581cf9c1a1220da68223fb0a562afaa
@@ -74,6 +82,6 @@ SPEC CHECKSUMS:
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   SDWebImage: f29024626962457f3470184232766516dee8dfea
 
-PODFILE CHECKSUM: ba3c68477c1f2288a3f50df50b94cdf6917c38ff
+PODFILE CHECKSUM: 0e11fc120d4d479ab615ca10baed2a2bc4a7c7e4
 
 COCOAPODS: 1.16.2

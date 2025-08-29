@@ -18,16 +18,6 @@ public class MainActivity extends FlutterFragmentActivity {
 
         // Register Push Template Handler once when app starts
         CleverTapAPI.setNotificationHandler(new PushTemplateNotificationHandler());
-
-        // Create notification channel ("test") same as dashboard wzrk_cid
-        CleverTapAPI.createNotificationChannel(
-                getApplicationContext(),
-                "test",                          // Channel ID (from dashboard payload)
-                "Test Channel",                  // Channel Name
-                "Channel for timer push notifications", // Description
-                NotificationManager.IMPORTANCE_HIGH,
-                true
-        );
     }
 
     @Override
