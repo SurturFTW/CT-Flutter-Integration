@@ -76,7 +76,7 @@ SPEC CHECKSUMS:
   firebase_core: e2aa06dbd854d961f8ce46c2e20933bee1bf2d2b
   FirebaseCore: 48b0dd707581cf9c1a1220da68223fb0a562afaa
   FirebaseCoreInternal: d98ab91e2d80a56d7b246856a8885443b302c0c2
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   geolocator_apple: 9bcea1918ff7f0062d98345d238ae12718acfbc1
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
