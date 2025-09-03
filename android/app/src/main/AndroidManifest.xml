@@ -11,7 +11,7 @@
 
     <application
         android:label="ct_flutter_integration"
-        android:name="com.clevertap.android.sdk.Application"
+        android:name="com.example.ct_flutter_integration.MainApplication"
         android:icon="@mipmap/ic_launcher">
 
         <activity

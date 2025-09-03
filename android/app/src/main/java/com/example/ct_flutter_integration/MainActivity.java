@@ -15,9 +15,6 @@ public class MainActivity extends FlutterFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Register Push Template Handler once when app starts
-        CleverTapAPI.setNotificationHandler(new PushTemplateNotificationHandler());
     }
 
     @Override
