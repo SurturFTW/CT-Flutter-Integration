@@ -5,8 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:math';
+import 'package:flutter/services.dart';
+// test - runnable, async task for background thread
 
-// Import your new files
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
 
@@ -22,6 +23,8 @@ void main() async {
 }
 
 void pushClickedPayloadReceived(Map<String, dynamic> notificationPayload) {
+  CleverTapPlugin.recordEvent(
+      "Notification Event", {'notification': 'clicked'});
   debugPrint(
       "pushClickedPayloadReceived called with notification payload: $notificationPayload");
 }
@@ -90,6 +93,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  static const platform = MethodChannel('myChannel');
+
   // Profile data
   final Map<String, dynamic> profile = {
     'Name': 'BatMan',
@@ -111,6 +116,18 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint("CleverTapPlugin initState");
     super.initState();
     _initializeCleverTap();
+    _listenToMethodChannelLinks();
+  }
+
+  void _listenToMethodChannelLinks() {
+    platform.setMethodCallHandler((call) async {
+      /* if (call.method == "handleDeepLink") {
+         String? deepLink = call.arguments as String?;
+        if (deepLink != null) {
+          _handleDeepLink(deepLink, isFromPush: false);
+        
+      }} */
+    });
   }
 
   void _initializeCleverTap() {

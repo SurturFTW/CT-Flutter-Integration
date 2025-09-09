@@ -7,6 +7,8 @@ import UserNotifications
 @main
 @objc class AppDelegate: FlutterAppDelegate {
 
+    private var channel: FlutterMethodChannel?
+
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -15,6 +17,11 @@ import UserNotifications
         // Register Flutter plugins
         GeneratedPluginRegistrant.register(with: self)
 
+        // MethodChannel for Deeplink forwarding
+        if let controller = window?.rootViewController as? FlutterViewController {
+           channel = FlutterMethodChannel(name: "myChannel", binaryMessenger: controller.binaryMessenger)
+        }
+
         // CleverTap integration
         CleverTap.setDebugLevel(CleverTapLogLevel.debug.rawValue)
         CleverTap.autoIntegrate()
@@ -22,6 +29,17 @@ import UserNotifications
 
         // Register push notifications
         registerForPush()
+
+        if let remoteNotification = launchOptions?[.remoteNotification] as? [AnyHashable: Any] {
+            NSLog("App launched from push notification: %@", remoteNotification)
+            CleverTap.sharedInstance()?.handleNotification(withData: remoteNotification)
+
+            // Extract deep link and forward to Flutter
+            if let deepLink = remoteNotification["wzrk_dl"] as? String {
+                // NSLog("Extracted deep link: %@", deepLink)
+                channel?.invokeMethod("handleDeepLink", arguments: deepLink)
+            }
+        }
 
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
