@@ -174,6 +174,15 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                         label: 'Scratch Card',
                         color: Colors.orange,
                       ),
+                      _buildActionCard(
+                        onPressed: () => _triggerEvent(
+                          "Cart View",
+                          "Draggable Video event triggered",
+                        ),
+                        icon: Icons.card_giftcard,
+                        label: 'Draggable Video',
+                        color: Colors.blue,
+                      ),
                     ],
                   ),
                 ],
