@@ -23,8 +23,6 @@ void main() async {
 }
 
 void pushClickedPayloadReceived(Map<String, dynamic> notificationPayload) {
-  CleverTapPlugin.recordEvent(
-      "Notification Event", {'notification': 'clicked'});
   debugPrint(
       "pushClickedPayloadReceived called with notification payload: $notificationPayload");
 }
@@ -95,6 +93,31 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   static const platform = MethodChannel('myChannel');
 
+  void localAlertPushPrimer() {
+    this.setState(() async {
+      bool? isPushPermissionEnabled =
+          await CleverTapPlugin.getPushNotificationPermissionStatus();
+      if (isPushPermissionEnabled == null) return;
+
+      // Check Push Permission status and then call `promptPushPrimer` if not enabled.
+      if (!isPushPermissionEnabled) {
+        var pushPrimerJSON = {
+          'inAppType': 'alert',
+          'titleText': 'Get Notified',
+          'messageText': 'Enable Notification permission',
+          'followDeviceOrientation': true,
+          'positiveBtnText': 'Allow',
+          'negativeBtnText': 'Cancel',
+          'fallbackToSettings': true
+        };
+        CleverTapPlugin.promptPushPrimer(pushPrimerJSON);
+        print("Alert Push Primer");
+      } else {
+        print("Push Permission is already enabled.");
+      }
+    });
+  }
+
   // Profile data
   final Map<String, dynamic> profile = {
     'Name': 'BatMan',
@@ -121,13 +144,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _listenToMethodChannelLinks() {
     platform.setMethodCallHandler((call) async {
-      /* if (call.method == "handleDeepLink") {
-         String? deepLink = call.arguments as String?;
+      if (call.method == "handleDeepLink") {
+        String? deepLink = call.arguments as String?;
         if (deepLink != null) {
           _handleDeepLink(deepLink, isFromPush: false);
-        
-      }} */
+        }
+      }
     });
+  }
+
+  void _handleDeepLink(String deepLink, {bool isFromPush = false}) {
+    debugPrint("Received deep link: $deepLink");
+    // Example: Navigate to a page or show a dialog
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Deep link received: $deepLink"),
+          backgroundColor: Colors.blue,
+        ),
+      );
+      // TODO: Add navigation logic based on deepLink value
+    }
   }
 
   void _initializeCleverTap() {
@@ -342,6 +379,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _inboxDidInitialize() {
+    debugPrint("Inbox initialized");
     setState(() {
       var styleConfig = {
         'noMessageTextColor': '#FF6600',
@@ -392,6 +430,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void _linkedContent() {
     CleverTapPlugin.recordEvent("android Purchase", {});
     _showSuccessSnackBar("Linked content event recorded");
+  }
+
+  void _richPushEvent() {
+    CleverTapPlugin.recordEvent("Rich Push", {});
+    _showSuccessSnackBar("Rich Push campaign event recorded");
   }
 
   Widget _buildActionCard({
@@ -569,6 +612,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.blue,
                         ),
                         _buildActionCard(
+                          onPressed: localAlertPushPrimer,
+                          icon: Icons.app_blocking,
+                          label: "Push Primer",
+                          color: Colors.blue,
+                        ),
+                        _buildActionCard(
                           onPressed: _recordNotificationEvent,
                           icon: Icons.notifications_active,
                           label: 'Notification Event',
@@ -614,6 +663,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: _emailEvent,
                           icon: Icons.email,
                           label: "Email Campaign",
+                          color: Colors.lightBlue,
+                        ),
+                        _buildActionCard(
+                          onPressed: _richPushEvent,
+                          icon: Icons.circle_notifications,
+                          label: "Rich Push Campaign",
                           color: Colors.lightBlue,
                         ),
                         _buildActionCard(

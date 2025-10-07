@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 
 import io.flutter.embedding.android.FlutterFragmentActivity;
 
+import com.clevertap.android.sdk.ActivityLifecycleCallback;
 import com.clevertap.android.sdk.CleverTapAPI;
 import com.clevertap.android.pushtemplates.PushTemplateNotificationHandler;
 
@@ -14,7 +15,14 @@ public class MainActivity extends FlutterFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ActivityLifecycleCallback.register(this.getApplication());
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        CleverTapAPI.onActivityResumed(this);
     }
 
     @Override
