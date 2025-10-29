@@ -183,6 +183,15 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                         label: 'Draggable Video',
                         color: Colors.blue,
                       ),
+                      _buildActionCard(
+                        onPressed: () => _triggerEvent(
+                          "Timer InApp",
+                          "Timer InApp event triggered",
+                        ),
+                        icon: Icons.timer,
+                        label: 'Timer InApp',
+                        color: Colors.blue,
+                      ),
                     ],
                   ),
                 ],
