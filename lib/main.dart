@@ -121,8 +121,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // Profile data
   final Map<String, dynamic> profile = {
     'Name': 'BatMan',
-    // 'First Name': 'Pushkar',
-    // 'Last Name': 'Sane',
+    'First Name': 'Pushkar',
+    'Last Name': 'Sane',
     'Identity': '200',
     'Email': 'Bat@man.com',
     'Phone': '+91123456789',
@@ -171,12 +171,8 @@ class _MyHomePageState extends State<MyHomePage> {
     CleverTapPlugin clevertapPlugin = CleverTapPlugin();
 
     // Create notification channel ("test") same as dashboard wzrk_cid
-    CleverTapPlugin.createNotificationChannel(
-        "test", // Channel ID (from dashboard payload)
-        "Test Channel", // Channel Name
-        "Channel for timer push notifications", // Description
-        3,
-        true);
+    CleverTapPlugin.createNotificationChannel("test", "Test Channel",
+        "Channel for timer push notifications", 3, true);
     CleverTapPlugin.setDebugLevel(3);
 
     if (!kIsWeb) {
@@ -223,8 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Navigate to Custom HTML Page
   void _navigateToCustomHTMLPage() {
-    // This event can trigger a custom HTML in-app from your CleverTap dashboard
-    _showSuccessSnackBar("Custom HTML event recorded");
+    _showSuccessSnackBar("Custom HTML Page");
 
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -437,6 +432,11 @@ class _MyHomePageState extends State<MyHomePage> {
     _showSuccessSnackBar("Rich Push campaign event recorded");
   }
 
+  void _medicalCondition() {
+    CleverTapPlugin.recordEvent("POP Remove Cart", {});
+    _showSuccessSnackBar("Medical Condition event recorded");
+  }
+
   Widget _buildActionCard({
     required VoidCallback? onPressed,
     required IconData icon,
@@ -457,10 +457,10 @@ class _MyHomePageState extends State<MyHomePage> {
             children: [
               Icon(
                 icon,
-                size: 24, // Reduced from 32
+                size: 24,
                 color: onPressed != null ? color : Colors.grey,
               ),
-              const SizedBox(height: 4), // Reduced from 8
+              const SizedBox(height: 4),
               FittedBox(
                 // Wrap text in FittedBox
                 fit: BoxFit.scaleDown,
@@ -468,7 +468,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   label,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 11, // Reduced from 12
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: onPressed != null ? Colors.black87 : Colors.grey,
                   ),
@@ -670,6 +670,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           icon: Icons.circle_notifications,
                           label: "Rich Push Campaign",
                           color: Colors.lightBlue,
+                        ),
+                        _buildActionCard(
+                          onPressed: _medicalCondition,
+                          icon: Icons.medical_services,
+                          label: 'Medical Condition',
+                          color: Colors.cyan,
                         ),
                         _buildActionCard(
                           onPressed: _getAllDisplayUnits,

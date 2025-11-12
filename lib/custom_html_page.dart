@@ -192,6 +192,15 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                         label: 'Timer InApp',
                         color: Colors.blue,
                       ),
+                      _buildActionCard(
+                        onPressed: () => _triggerEvent(
+                          "In-App Test",
+                          "In-App Test event triggered",
+                        ),
+                        icon: Icons.textsms,
+                        label: 'In-App Test',
+                        color: Colors.blue,
+                      ),
                     ],
                   ),
                 ],
