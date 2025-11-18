@@ -194,6 +194,15 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                       ),
                       _buildActionCard(
                         onPressed: () => _triggerEvent(
+                          "GFT Category Navigation Clicked",
+                          "Native Scratch Card",
+                        ),
+                        icon: Icons.screen_search_desktop_sharp,
+                        label: 'Native Scratch Card',
+                        color: Colors.blue,
+                      ),
+                      _buildActionCard(
+                        onPressed: () => _triggerEvent(
                           "In-App Test",
                           "In-App Test event triggered",
                         ),
