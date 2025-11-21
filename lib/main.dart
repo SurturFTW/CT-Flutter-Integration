@@ -183,6 +183,12 @@ class _MyHomePageState extends State<MyHomePage> {
         pushClickedPayloadReceived);
     clevertapPlugin.setCleverTapInboxDidInitializeHandler(_inboxDidInitialize);
 
+    clevertapPlugin.setCleverTapInAppNotificationButtonClickedHandler((map) {
+      setState(() {
+        print("inAppNotificationButtonClicked called = ${map.toString()}");
+      });
+    });
+
     debugPrint("CleverTap basic initialization complete");
   }
 
