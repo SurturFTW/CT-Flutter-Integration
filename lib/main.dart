@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
+import 'peHomePage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -443,6 +444,16 @@ class _MyHomePageState extends State<MyHomePage> {
     _showSuccessSnackBar("Medical Condition event recorded");
   }
 
+  void _navigateToPEPage() {
+    _showSuccessSnackBar("Product Experience Page");
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const PeHomePage(),
+      ),
+    );
+  }
+
   Widget _buildActionCard({
     required VoidCallback? onPressed,
     required IconData icon,
@@ -699,6 +710,12 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: _navigateToCustomHTMLPage,
                           icon: Icons.web,
                           label: "Custom HTML Page",
+                          color: Colors.redAccent,
+                        ),
+                        _buildActionCard(
+                          onPressed: _navigateToPEPage,
+                          icon: Icons.production_quantity_limits,
+                          label: "Product Experience Page",
                           color: Colors.redAccent,
                         ),
                       ],
