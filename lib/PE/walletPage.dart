@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:clevertap_plugin/clevertap_plugin.dart';
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/services.dart'; // Add if you want haptic feedback
 
 class TrueMoneyPage extends StatefulWidget {
   const TrueMoneyPage({Key? key}) : super(key: key);
@@ -35,6 +36,9 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
 
   // Banner image URLs from CleverTap
   List<String> _bannerImageUrls = [];
+
+  // Add this variable to store the current userId (optional)
+  String _currentUserId = 'user1@example.com';
 
   @override
   void initState() {
@@ -221,43 +225,24 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
     return Scaffold(
       body: Stack(
         children: [
-          // Scrollable content
           SingleChildScrollView(
             child: Column(
               children: [
-                // Header with gradient and decorative circles
                 _buildHeader(),
-
                 const SizedBox(height: 20),
-
-                // Card section
                 _buildCardSection(),
-
                 const SizedBox(height: 30),
-
-                // First icon row
                 _buildFirstIconRow(),
-
                 const SizedBox(height: 20),
-
-                // Second icon row
                 _buildSecondIconRow(),
-
                 const SizedBox(height: 30),
-
-                // Image carousel
                 _buildImageCarousel(),
-
                 const SizedBox(height: 35),
-
-                // Pay Now button
                 _buildPayNowButton(),
-
                 const SizedBox(height: 30),
-
-                // Refresh Config button
                 _buildRefreshConfigButton(),
-
+                const SizedBox(height: 20),
+                _buildSwitchUserButton(), // <-- Add this line
                 const SizedBox(height: 40),
               ],
             ),
@@ -561,7 +546,7 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
       onTap: () {
         print('✅ $title tapped');
         // Add haptic feedback
-        // HapticFeedback.lightImpact();
+        HapticFeedback.lightImpact();
       },
       borderRadius: BorderRadius.circular(30),
       child: Container(
@@ -755,6 +740,73 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSwitchUserButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: OutlinedButton.icon(
+        icon: Icon(Icons.person, color: _buttonColor),
+        label: Text(
+          'Switch User',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: _buttonColor,
+          ),
+        ),
+        onPressed: () async {
+          final newUserId = await _showUserIdDialog();
+          if (newUserId != null && newUserId.isNotEmpty) {
+            setState(() {
+              _currentUserId = newUserId;
+            });
+            // Call CleverTap onUserLogin
+            CleverTapPlugin.onUserLogin({
+              'Identity': newUserId,
+            });
+            print('Switched to user: $newUserId');
+            fetchVariables(); // Refresh variables for new user
+          }
+        },
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          side: BorderSide(color: _buttonColor, width: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<String?> _showUserIdDialog() async {
+    String userId = '';
+    return showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Switch User'),
+          content: TextField(
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Enter User Email/ID',
+            ),
+            onChanged: (value) => userId = value,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(userId),
+              child: const Text('Switch'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
