@@ -356,16 +356,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void _openInbox() {
     try {
       CleverTapPlugin.recordEvent("App Inbox Event", {});
-      CleverTapPlugin.initializeInbox();
-      _showSuccessSnackBar("Opening App Inbox...");
-    } catch (e) {
-      _showErrorSnackBar("Failed to open inbox: $e");
-    }
-  }
 
-  void _inboxDidInitialize() {
-    debugPrint("Inbox initialized");
-    setState(() {
+      // Check if inbox is initialized, then show it
       var styleConfig = {
         'noMessageTextColor': '#FF6600',
         'noMessageText': 'No message(s) to show.',
@@ -374,8 +366,16 @@ class _MyHomePageState extends State<MyHomePage> {
         'navBarColor': '#9C27B0',
         'inboxBackgroundColor': '#F5F5F5',
       };
+
       CleverTapPlugin.showInbox(styleConfig);
-    });
+      _showSuccessSnackBar("Opening App Inbox...");
+    } catch (e) {
+      _showErrorSnackBar("Failed to open inbox: $e");
+    }
+  }
+
+  void _inboxDidInitialize() {
+    debugPrint("Inbox initialized and ready");
   }
 
   // UI Helper methods
