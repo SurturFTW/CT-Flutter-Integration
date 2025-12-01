@@ -10,7 +10,8 @@ import 'package:flutter/services.dart';
 
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
-import 'peHomePage.dart';
+
+import 'PE/walletPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -121,12 +122,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Profile data
   final Map<String, dynamic> profile = {
-    'Name': 'BatMan',
-    'First Name': 'Pushkar',
-    'Last Name': 'Sane',
-    'Identity': '200',
-    'Email': 'Bat@man.com',
-    'Phone': '+91123456789',
+    // 'Name': 'BatMan',
+    // 'First Name': 'Pushkar',
+    // 'Last Name': 'Sane',
+    'Identity': '1913',
+    // 'Email': 'Bat@man.com',
+    // 'Phone': '+91123456789',
   };
 
   // State variables
@@ -344,29 +345,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _markDisplayUnitAsViewed(String unitId) {
-    try {
-      CleverTapPlugin.recordEvent("Display Unit Viewed", {
-        'unit_id': unitId,
-        'source': 'manual_trigger',
-        'timestamp': DateTime.now().toIso8601String(),
-      });
-      _showSuccessSnackBar("Display unit viewed: $unitId");
-    } catch (e) {
-      _showErrorSnackBar("Error marking unit as viewed: $e");
-    }
+    _showSuccessSnackBar("Display unit viewed: $unitId");
   }
 
   void _onContentItemClicked(Map<String, dynamic> item, String unitId) {
-    try {
-      CleverTapPlugin.recordEvent("Native Display Content Clicked", {
-        'unit_id': unitId,
-        'content_key': item['key']?.toString() ?? '',
-        'timestamp': DateTime.now().toIso8601String(),
-      });
-      _showSuccessSnackBar("Content clicked!");
-    } catch (e) {
-      _showErrorSnackBar("Error recording click: $e");
-    }
+    _showSuccessSnackBar("Content clicked!");
   }
 
   // Inbox methods
@@ -444,12 +427,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _showSuccessSnackBar("Medical Condition event recorded");
   }
 
-  void _navigateToPEPage() {
-    _showSuccessSnackBar("Product Experience Page");
+  void _navigateToTrueMoneyPage() {
+    _showSuccessSnackBar("TrueMoney Wallet Page");
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const PeHomePage(),
+        builder: (context) => const TrueMoneyPage(),
       ),
     );
   }
@@ -713,10 +696,10 @@ class _MyHomePageState extends State<MyHomePage> {
                           color: Colors.redAccent,
                         ),
                         _buildActionCard(
-                          onPressed: _navigateToPEPage,
-                          icon: Icons.production_quantity_limits,
-                          label: "Product Experience Page",
-                          color: Colors.redAccent,
+                          onPressed: _navigateToTrueMoneyPage,
+                          icon: Icons.account_balance_wallet,
+                          label: "PE Demo",
+                          color: Colors.purple,
                         ),
                       ],
                     ),
