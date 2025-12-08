@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:clevertap_plugin/clevertap_plugin.dart';
 import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/services.dart'; // Add if you want haptic feedback
+import 'package:flutter/services.dart';
+import 'bill_payment_page.dart';
+import 'rewards_page.dart';
 
 class TrueMoneyPage extends StatefulWidget {
   const TrueMoneyPage({Key? key}) : super(key: key);
@@ -37,7 +39,7 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
   // Banner image URLs from CleverTap
   List<String> _bannerImageUrls = [];
 
-  // Add this variable to store the current userId (optional)
+  // variable to store the current userId (optional)
   String _currentUserId = 'user1@example.com';
 
   @override
@@ -93,10 +95,10 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
 
     // Step 3: Sync variables to dashboard (ONLY in debug mode)
     // Uncomment this line ONLY when you want to sync to dashboard
-    CleverTapPlugin.syncVariables();
+    // CleverTapPlugin.syncVariables();
 
     // Step 4: Fetch latest values from server
-    // fetchVariables();
+    fetchVariables();
   }
 
   void fetchVariables() async {
@@ -547,6 +549,30 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
         print('✅ $title tapped');
         // Add haptic feedback
         HapticFeedback.lightImpact();
+
+        if (title == 'Pay Bills') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BillPaymentPage(
+                buttonColor: _buttonColor,
+                textColor: _textColor,
+                availableCredit: _availableCredit,
+              ),
+            ),
+          );
+        } else if (title == 'Rewards') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RewardsPage(
+                buttonColor: _buttonColor,
+                textColor: _textColor,
+                rewardPoints: _rewardPoints,
+              ),
+            ),
+          );
+        }
       },
       borderRadius: BorderRadius.circular(30),
       child: Container(

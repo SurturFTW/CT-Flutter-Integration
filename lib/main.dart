@@ -6,12 +6,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:math';
 import 'package:flutter/services.dart';
-// test - runnable, async task for background thread
 
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
-
 import 'PE/walletPage.dart';
+import 'PE/subscriptionPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -437,6 +436,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _navigateToSubscriptionNewsPage() {
+    _showSuccessSnackBar("Subscription News Page");
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SubscriptionNewsPage(),
+      ),
+    );
+  }
+
   Widget _buildActionCard({
     required VoidCallback? onPressed,
     required IconData icon,
@@ -452,7 +461,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           child: Column(
-            mainAxisSize: MainAxisSize.min, // Change to min
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
@@ -698,8 +707,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         _buildActionCard(
                           onPressed: _navigateToTrueMoneyPage,
                           icon: Icons.account_balance_wallet,
-                          label: "PE Demo",
+                          label: "FinTech PE",
                           color: Colors.purple,
+                        ),
+                        _buildActionCard(
+                          onPressed: _navigateToSubscriptionNewsPage,
+                          icon: Icons.article,
+                          label: "Subscription PE",
+                          color: Colors.deepPurple,
                         ),
                       ],
                     ),
