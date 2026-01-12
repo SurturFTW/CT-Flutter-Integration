@@ -39,7 +39,7 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
   // Banner image URLs from CleverTap
   List<String> _bannerImageUrls = [];
 
-  // variable to store the current userId (optional)
+  // variable to store the current userId
   String _currentUserId = 'user1@example.com';
 
   @override
@@ -244,7 +244,7 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
                 const SizedBox(height: 30),
                 _buildRefreshConfigButton(),
                 const SizedBox(height: 20),
-                _buildSwitchUserButton(), // <-- Add this line
+                _buildSwitchUserButton(),
                 const SizedBox(height: 40),
               ],
             ),

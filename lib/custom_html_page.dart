@@ -9,6 +9,14 @@ class CustomHtmlPage extends StatefulWidget {
 }
 
 class _CustomHtmlPageState extends State<CustomHtmlPage> {
+  final TextEditingController _eventController = TextEditingController();
+
+  @override
+  void dispose() {
+    _eventController.dispose();
+    super.dispose();
+  }
+
   void _triggerEvent(String eventName, String message) {
     try {
       CleverTapPlugin.recordEvent(eventName, {});
@@ -41,6 +49,15 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
           duration: const Duration(seconds: 2),
         ),
       );
+    }
+  }
+
+  void _triggerEventFromText() {
+    final eventName = _eventController.text.trim();
+    if (eventName.isNotEmpty) {
+      _triggerEvent(eventName, "Event '$eventName' triggered");
+    } else {
+      _showErrorSnackBar("Please enter an event name");
     }
   }
 
@@ -148,6 +165,35 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                   ),
                   const SizedBox(height: 24),
 
+                  // Text Input Section
+                  Card(
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: _eventController,
+                            decoration: const InputDecoration(
+                              labelText: 'Enter Event Name',
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.event),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          ElevatedButton(
+                            onPressed: _triggerEventFromText,
+                            child: const Text('Fire Event'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
                   // Grid of Action Cards
                   GridView.count(
                     shrinkWrap: true,
@@ -204,10 +250,10 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                       _buildActionCard(
                         onPressed: () => _triggerEvent(
                           "In-App Test",
-                          "In-App Test event triggered",
+                          "Test In-App",
                         ),
                         icon: Icons.textsms,
-                        label: 'In-App Test',
+                        label: 'Test In-App',
                         color: Colors.blue,
                       ),
                     ],
