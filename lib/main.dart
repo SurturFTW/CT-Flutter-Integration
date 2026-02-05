@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
 import 'PE/walletPage.dart';
-import 'PE/subscriptionPage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -71,14 +70,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'CT Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(title: 'CT Flutter Integration'),
-    );
+        title: 'CT Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(title: 'CT Flutter Demo'));
   }
 }
 
@@ -121,12 +119,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Profile data
   final Map<String, dynamic> profile = {
-    // 'Name': 'BatMan',
-    // 'First Name': 'Pushkar',
-    // 'Last Name': 'Sane',
-    'Identity': '1913',
-    // 'Email': 'Bat@man.com',
-    // 'Phone': '+91123456789',
+    'Name': 'BatMan',
+    'First Name': 'Pushkar',
+    'Last Name': 'Sane',
+    'Identity': '200',
+    'Email': 'Bat@man.com',
+    'Phone': '+91123456789',
   };
 
   // State variables
@@ -164,16 +162,17 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Colors.blue,
         ),
       );
-      // TODO: Add navigation logic based on deepLink value
+      // Add navigation logic based on deepLink value
     }
   }
 
   void _initializeCleverTap() {
     CleverTapPlugin clevertapPlugin = CleverTapPlugin();
 
-    // Create notification channel ("test") same as dashboard wzrk_cid
-    CleverTapPlugin.createNotificationChannel("test", "Test Channel",
-        "Channel for timer push notifications", 3, true);
+    // Create notification channel
+    CleverTapPlugin.createNotificationChannel(
+        "test", "Test Channel", "Channel for push notifications", 3, true);
+
     CleverTapPlugin.setDebugLevel(3);
 
     if (!kIsWeb) {
@@ -432,16 +431,6 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const TrueMoneyPage(),
-      ),
-    );
-  }
-
-  void _navigateToSubscriptionNewsPage() {
-    _showSuccessSnackBar("Subscription News Page");
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const SubscriptionNewsPage(),
       ),
     );
   }
@@ -709,12 +698,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           icon: Icons.account_balance_wallet,
                           label: "FinTech PE",
                           color: Colors.purple,
-                        ),
-                        _buildActionCard(
-                          onPressed: _navigateToSubscriptionNewsPage,
-                          icon: Icons.article,
-                          label: "Subscription PE",
-                          color: Colors.deepPurple,
                         ),
                       ],
                     ),
