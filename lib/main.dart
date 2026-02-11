@@ -119,12 +119,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Profile data
   final Map<String, dynamic> profile = {
-    'Name': 'BatMan',
-    'First Name': 'Pushkar',
-    'Last Name': 'Sane',
-    'Identity': '200',
-    'Email': 'Bat@man.com',
-    'Phone': '+91123456789',
+    // 'Name': 'BatMan',
+    // 'First Name': 'Pushkar',
+    // 'Last Name': 'Sane',
+    'Identity': '738',
+    // 'Email': 'Bat@man.com',
+    // 'Phone': '+91123456789',
   };
 
   // State variables
@@ -139,6 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _initializeCleverTap();
     _listenToMethodChannelLinks();
+
+    Future.delayed(const Duration(seconds: 5), () {
+      CleverTapPlugin.recordEvent("Page Viewed", {});
+    });
   }
 
   void _listenToMethodChannelLinks() {
@@ -164,6 +168,82 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       // Add navigation logic based on deepLink value
     }
+  }
+
+  void _showCustomPopup({
+    required String title,
+    required String message,
+    IconData? icon,
+    VoidCallback? onAction,
+    String actionText = 'OK',
+  }) {
+    if (mounted) {
+      CleverTapPlugin.suspendInAppNotifications();
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Row(
+              children: [
+                if (icon != null) ...[
+                  Icon(icon,
+                      color: Theme.of(context).colorScheme.primary, size: 28),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            content: Container(
+              constraints: const BoxConstraints(maxWidth: 300),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primaryContainer
+                          .withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      message,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
+              ),
+              if (onAction != null)
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    onAction();
+                  },
+                  child: Text(actionText),
+                ),
+            ],
+          );
+        },
+      );
+    }
+    CleverTapPlugin.resumeInAppNotifications();
   }
 
   void _initializeCleverTap() {
@@ -435,6 +515,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _showExamplePopup() {
+    _showCustomPopup(
+      title: 'Sample Popup',
+      message: 'This is a sample popup dialog that opens on button click!',
+      icon: Icons.info_outline,
+      onAction: () {
+        _showSuccessSnackBar('Popup action executed!');
+      },
+      actionText: 'Got It',
+    );
+  }
+
   Widget _buildActionCard({
     required VoidCallback? onPressed,
     required IconData icon,
@@ -544,7 +636,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 border: Border.all(color: Colors.green),
                               ),
                               child: Text(
-                                'Logged in • ID: ${_cleverTapId ?? 'Loading...'}',
+                                '• CT ID: ${_cleverTapId ?? 'Loading...'}',
                                 style: const TextStyle(
                                   color: Colors.green,
                                   fontWeight: FontWeight.w600,
@@ -699,6 +791,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           label: "FinTech PE",
                           color: Colors.purple,
                         ),
+                        _buildActionCard(
+                            onPressed: _showExamplePopup,
+                            icon: Icons.info_outline,
+                            label: 'Show Example Popup',
+                            color: Colors.blue)
                       ],
                     ),
                   ),
