@@ -140,7 +140,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _initializeCleverTap();
     _listenToMethodChannelLinks();
 
-    Future.delayed(const Duration(seconds: 5), () {
+    CleverTapPlugin.resumeInAppNotifications();
+
+    Future.delayed(const Duration(seconds: 8), () {
       CleverTapPlugin.recordEvent("Page Viewed", {});
     });
   }
@@ -227,7 +229,10 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             actions: [
               TextButton(
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  CleverTapPlugin.resumeInAppNotifications();
+                },
                 child: const Text('Close'),
               ),
               if (onAction != null)
@@ -235,6 +240,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     Navigator.of(context).pop();
                     onAction();
+                    CleverTapPlugin.resumeInAppNotifications();
                   },
                   child: Text(actionText),
                 ),
@@ -243,7 +249,6 @@ class _MyHomePageState extends State<MyHomePage> {
         },
       );
     }
-    CleverTapPlugin.resumeInAppNotifications();
   }
 
   void _initializeCleverTap() {

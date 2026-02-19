@@ -244,6 +244,8 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
                 const SizedBox(height: 30),
                 _buildRefreshConfigButton(),
                 const SizedBox(height: 20),
+                _buildQuickUserSwitcher(),
+                const SizedBox(height: 20),
                 _buildSwitchUserButton(),
                 const SizedBox(height: 40),
               ],
@@ -765,6 +767,62 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
             borderRadius: BorderRadius.circular(16),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildQuickUserSwitcher() {
+    final quickUsers = ['1911', '1912', '1913', '1914', '1915'];
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Quick Switch:',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: quickUsers
+                .map(
+                  (userId) => FilterChip(
+                    label: Text(
+                      userId.split('@')[0], // Show only the part before @
+                      style: TextStyle(
+                        color: _currentUserId == userId
+                            ? Colors.white
+                            : _buttonColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                    selected: _currentUserId == userId,
+                    onSelected: (selected) {
+                      if (selected && _currentUserId != userId) {
+                        setState(() {
+                          _currentUserId = userId;
+                        });
+                        CleverTapPlugin.onUserLogin({
+                          'Identity': userId,
+                        });
+                        print('Quick switched to user: $userId');
+                        fetchVariables();
+                      }
+                    },
+                    selectedColor: _buttonColor,
+                    checkmarkColor: Colors.white,
+                    side: BorderSide(color: _buttonColor),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
       ),
     );
   }
