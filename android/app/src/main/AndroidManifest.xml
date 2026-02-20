@@ -12,7 +12,7 @@
     <application
         android:label="ct_flutter_integration"
         android:name="com.example.ct_flutter_integration.MainApplication"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
 
         <activity
             android:name=".MainActivity"

@@ -511,7 +511,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _navigateToTrueMoneyPage() {
-    _showSuccessSnackBar("TrueMoney Wallet Page");
+    // _showSuccessSnackBar("TrueMoney Wallet Page");
 
     Navigator.of(context).push(
       MaterialPageRoute(
