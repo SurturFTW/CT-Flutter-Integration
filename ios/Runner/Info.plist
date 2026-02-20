@@ -24,7 +24,7 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
-
+	
 	<!-- For QA Pushkar-->
 	<key>CleverTapAccountID</key>
 	<string>TEST-865-ZRW-7K7Z</string> 
