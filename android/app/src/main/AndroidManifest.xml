@@ -12,7 +12,7 @@
     <application
         android:label="ct_flutter_integration"
         android:name="com.example.ct_flutter_integration.MainApplication"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
 
         <activity
             android:name=".MainActivity"
@@ -45,6 +45,15 @@
             <meta-data
                 android:name="CLEVERTAP_TOKEN"
                 android:value="TEST-021-56b"/>
+
+            <!-- Shreyas Dashboard for PE -->
+            <!-- <meta-data
+                android:name="CLEVERTAP_ACCOUNT_ID"
+                android:value="677-ZZ6-7K7Z"/>
+            <meta-data
+                android:name="CLEVERTAP_TOKEN"
+                android:value="611-aa6"/> -->
+
             <!-- IMPORTANT: To force use Google AD ID to uniquely identify  users, use the following meta tag. GDPR mandates that if you are using this tag, there is prominent disclousure to your end customer in their application. Read more about GDPR here - https://clevertap.com/blog/in-preparation-of-gdpr-compliance/ -->
             <meta-data
                 android:name="CLEVERTAP_USE_GOOGLE_AD_ID"

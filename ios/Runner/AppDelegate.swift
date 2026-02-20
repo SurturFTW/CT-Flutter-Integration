@@ -90,7 +90,7 @@ import UserNotifications
                                          willPresent notification: UNNotification,
                                          withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         NSLog("Push notification received in foreground: %@", notification.request.content.userInfo)
-        CleverTap.sharedInstance()?.recordNotificationViewedEvent(withData: notification.request.content.userInfo)
+        // CleverTap.sharedInstance()?.recordNotificationViewedEvent(withData: notification.request.content.userInfo)
         completionHandler([.alert, .badge, .sound])
     }
 

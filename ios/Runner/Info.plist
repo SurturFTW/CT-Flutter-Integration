@@ -24,10 +24,31 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+
+	<!-- For QA Pushkar-->
 	<key>CleverTapAccountID</key>
-	<string>TEST-865-ZRW-7K7Z</string>
+	<string>TEST-865-ZRW-7K7Z</string> 
 	<key>CleverTapToken</key>
 	<string>TEST-021-56b</string>
+
+	<!-- For PE Shreyas
+	<key>CleverTapAccountID</key>
+	<string>677-ZZ6-7K7Z</string>
+	<key>CleverTapToken</key>
+	<string>611-aa6</string> -->
+
+	<!-- For In-App Pradeep -->
+	<!-- <key>CleverTapAccountID</key>
+	<string>TEST-4W5-9RR-646Z</string> 
+	<key>CleverTapToken</key>
+	<string>TEST-22c-504</string> -->
+
+	<!-- Pradeep 2 -->
+	<!-- <key>CleverTapAccountID</key>
+	<string>TEST-886-WZR-867Z</string>
+	<key>CleverTapToken</key>
+	<string>TEST-210-6bb</string> -->
+
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
