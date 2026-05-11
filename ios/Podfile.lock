@@ -1,10 +1,11 @@
 PODS:
-  - CleverTap-iOS-SDK (7.3.1):
+  - CleverTap-iOS-SDK (7.6.0):
     - SDWebImage (~> 5.11)
-  - clevertap_plugin (3.5.0):
-    - CleverTap-iOS-SDK (= 7.3.1)
+  - clevertap_plugin (4.0.0):
+    - CleverTap-iOS-SDK (= 7.6.0)
     - Flutter
-  - CTNotificationContent (1.1.0)
+  - CTNotificationContent (1.3.0):
+    - SDWebImage (~> 5.11)
   - CTNotificationService (0.1.7)
   - Firebase/CoreOnly (11.6.0):
     - FirebaseCore (~> 11.6.0)
@@ -28,21 +29,29 @@ PODS:
   - "GoogleUtilities/NSData+zlib (8.1.0)":
     - GoogleUtilities/Privacy
   - GoogleUtilities/Privacy (8.1.0)
+  - path_provider_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - permission_handler_apple (9.3.0):
     - Flutter
-  - SDWebImage (5.21.1):
-    - SDWebImage/Core (= 5.21.1)
-  - SDWebImage/Core (5.21.1)
+  - SDWebImage (5.21.7):
+    - SDWebImage/Core (= 5.21.7)
+  - SDWebImage/Core (5.21.7)
+  - sqflite_darwin (0.0.4):
+    - Flutter
+    - FlutterMacOS
 
 DEPENDENCIES:
-  - CleverTap-iOS-SDK
+  - CleverTap-iOS-SDK (= 7.6.0)
   - clevertap_plugin (from `.symlinks/plugins/clevertap_plugin/ios`)
   - CTNotificationContent
   - CTNotificationService
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
 
 SPEC REPOS:
   trunk:
@@ -64,13 +73,17 @@ EXTERNAL SOURCES:
     :path: Flutter
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  sqflite_darwin:
+    :path: ".symlinks/plugins/sqflite_darwin/darwin"
 
 SPEC CHECKSUMS:
-  CleverTap-iOS-SDK: 05c1860785c898f4f2316df6a207eb0ebd9d890a
-  clevertap_plugin: bc694a3566b5012f14798129b3f84665fe89a762
-  CTNotificationContent: c1cab33a5a5bbbc4e4b743acccdfe8605cedd205
+  CleverTap-iOS-SDK: 81e77b4723d75ef68c9fa656f6af3168121d7c7c
+  clevertap_plugin: 748e8ca0f4f7b6876ea1106d91c6847bc95b4bf7
+  CTNotificationContent: 3e645bbfa9c463e461bcfb44b6d726d1ae5cee86
   CTNotificationService: 3eceea27cf0e28a2e14267bb706013363eb620c6
   Firebase: 374a441a91ead896215703a674d58cdb3e9d772b
   firebase_core: e2aa06dbd854d961f8ce46c2e20933bee1bf2d2b
@@ -79,9 +92,11 @@ SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   geolocator_apple: 9bcea1918ff7f0062d98345d238ae12718acfbc1
   GoogleUtilities: 00c88b9a86066ef77f0da2fab05f65d7768ed8e1
+  path_provider_foundation: 0b743cbb62d8e47eab856f09262bb8c1ddcfe6ba
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
-  SDWebImage: f29024626962457f3470184232766516dee8dfea
+  SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
+  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
 
-PODFILE CHECKSUM: 0e11fc120d4d479ab615ca10baed2a2bc4a7c7e4
+PODFILE CHECKSUM: 5cfd0d5d68fd7770cd4e470ac4ad79e0aa037726
 
 COCOAPODS: 1.16.2

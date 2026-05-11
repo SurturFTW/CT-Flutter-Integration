@@ -46,6 +46,14 @@
                 android:name="CLEVERTAP_TOKEN"
                 android:value="TEST-021-56b"/>
 
+            <!-- Time Test -->
+            <!-- <meta-data
+                android:name="CLEVERTAP_ACCOUNT_ID"
+                android:value="TEST-8RK-55K-847Z"/>
+            <meta-data
+                android:name="CLEVERTAP_TOKEN"
+                android:value="SOM-JEB-CAEL"/> -->
+
             <!-- Shreyas Dashboard for PE -->
             <!-- <meta-data
                 android:name="CLEVERTAP_ACCOUNT_ID"

@@ -14,11 +14,13 @@ import 'PE/walletPage.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await _requestPermissions();
+  runApp(const MyApp());
 
   CleverTapPlugin.onKilledStateNotificationClicked(
       _onKilledStateNotificationClickedHandler);
 
-  runApp(const MyApp());
+  CleverTapPlugin.setDebugLevel(3);
+
   await Firebase.initializeApp();
 }
 
@@ -77,6 +79,8 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         home: const MyHomePage(title: 'CT Flutter Demo'));
+    //For Product Experiences
+    // home: const TrueMoneyPage());
   }
 }
 
@@ -122,9 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // 'Name': 'BatMan',
     // 'First Name': 'Pushkar',
     // 'Last Name': 'Sane',
-    'Identity': '738',
-    // 'Email': 'Bat@man.com',
-    // 'Phone': '+91123456789',
+    'Identity': '787',
+    // 'Email': 'bat@man.com',
+    'Phone': '+44123456789',
   };
 
   // State variables
@@ -255,6 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
     CleverTapPlugin clevertapPlugin = CleverTapPlugin();
 
     // Create notification channel
+    // channelId, channelName, channelDescription, importance, showBadge
     CleverTapPlugin.createNotificationChannel(
         "test", "Test Channel", "Channel for push notifications", 3, true);
 
@@ -273,6 +278,8 @@ class _MyHomePageState extends State<MyHomePage> {
         print("inAppNotificationButtonClicked called = ${map.toString()}");
       });
     });
+
+    clevertapPlugin.setCleverTapDisplayUnitsLoadedHandler(onDisplayUnitsLoaded);
 
     debugPrint("CleverTap basic initialization complete");
   }
@@ -296,6 +303,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _login() async {
     try {
       CleverTapPlugin.onUserLogin(profile);
+      // CleverTapPlugin.profileRemoveValueForKey("dob");
       String? ctId = await CleverTapPlugin.getCleverTapID();
       setState(() {
         _isLoggedIn = true;
@@ -383,9 +391,22 @@ class _MyHomePageState extends State<MyHomePage> {
     try {
       CleverTapPlugin.recordEvent("Native Event", {});
       _showSuccessSnackBar("Native Display event recorded");
-      _getAllDisplayUnits();
+      _renderNativeDisplay(); // Renders on native side
     } catch (e) {
       _showErrorSnackBar("Failed to record native display event: $e");
+    }
+  }
+
+  // New method for native rendering
+  Future<void> _renderNativeDisplay() async {
+    try {
+      debugPrint("Rendering Native Display on native side...");
+      // Call native method to render display units
+      await platform.invokeMethod('renderNativeDisplayUnits');
+      _showSuccessSnackBar("Native Display rendered on native side");
+    } catch (e) {
+      debugPrint("Error rendering native display: $e");
+      _showErrorSnackBar("Native Display error: $e");
     }
   }
 
@@ -414,6 +435,19 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void onDisplayUnitsLoaded(List<dynamic>? displayUnits) {
+    if (displayUnits != null && displayUnits.isNotEmpty) {
+      setState(() {
+        // Accumulate units instead of replacing them
+        List<Map<String, dynamic>> newUnits = _convertToMapList(displayUnits);
+        _displayUnits.addAll(newUnits);
+        _hasDisplayUnits = true;
+        print("Display Units Loaded = ${_displayUnits.length} total units");
+        debugPrint("Total display units: ${_displayUnits.length}");
+      });
+    }
+  }
+
   // Navigate to Native Display Page
   void _navigateToNativeDisplayPage() {
     Navigator.of(context).push(
@@ -429,16 +463,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _markDisplayUnitAsViewed(String unitId) {
     _showSuccessSnackBar("Display unit viewed: $unitId");
+    CleverTapPlugin.pushDisplayUnitViewedEvent(unitId);
   }
 
   void _onContentItemClicked(Map<String, dynamic> item, String unitId) {
     _showSuccessSnackBar("Content clicked!");
+    CleverTapPlugin.pushDisplayUnitClickedEvent(unitId);
   }
 
   // Inbox methods
   void _openInbox() {
     try {
-      CleverTapPlugin.recordEvent("App Inbox Event", {});
+      // CleverTapPlugin.recordEvent("App Inbox Event", {});
 
       // Check if inbox is initialized, then show it
       var styleConfig = {
