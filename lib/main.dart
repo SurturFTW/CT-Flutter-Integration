@@ -19,6 +19,8 @@ void main() async {
   CleverTapPlugin.onKilledStateNotificationClicked(
       _onKilledStateNotificationClickedHandler);
 
+  CleverTapPlugin.setDebugLevel(3);
+
   await Firebase.initializeApp();
 }
 
@@ -124,9 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // 'Name': 'BatMan',
     // 'First Name': 'Pushkar',
     // 'Last Name': 'Sane',
-    'Identity': '200',
-    'Email': 'bat@man.com',
-    // 'Phone': '+91123456789',
+    'Identity': '787',
+    // 'Email': 'bat@man.com',
+    'Phone': '+44123456789',
   };
 
   // State variables
@@ -257,6 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
     CleverTapPlugin clevertapPlugin = CleverTapPlugin();
 
     // Create notification channel
+    // channelId, channelName, channelDescription, importance, showBadge
     CleverTapPlugin.createNotificationChannel(
         "test", "Test Channel", "Channel for push notifications", 3, true);
 
@@ -471,7 +474,7 @@ class _MyHomePageState extends State<MyHomePage> {
   // Inbox methods
   void _openInbox() {
     try {
-      CleverTapPlugin.recordEvent("App Inbox Event", {});
+      // CleverTapPlugin.recordEvent("App Inbox Event", {});
 
       // Check if inbox is initialized, then show it
       var styleConfig = {

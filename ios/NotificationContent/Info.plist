@@ -3,6 +3,12 @@
 <plist version="1.0">
 <dict>
 	<key>NSExtension</key>
+
+	<key>CleverTapAccountID</key>
+	<string>TEST-865-ZRW-7K7Z</string> 
+	<key>CleverTapToken</key>
+	<string>TEST-021-56b</string>
+
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict>

@@ -113,6 +113,10 @@ import UserNotifications
         completionHandler()
     }
 
+    func pushNotificationTapped(withCustomExtras customExtras: [AnyHashable : Any]!) {
+        NSLog("pushNotificationTapped: customExtras: ", customExtras)
+    }
+
     // Optional: Deep Link / URL Handling
     override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         NSLog("Open URL: %@", url.absoluteString)

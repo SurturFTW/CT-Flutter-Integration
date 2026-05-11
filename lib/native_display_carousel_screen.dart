@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:clevertap_plugin/clevertap_plugin.dart';
 
 class NativeDisplayCarouselScreen extends StatefulWidget {
   final List<Map<String, dynamic>> displayUnits;
@@ -112,6 +113,8 @@ class _NativeDisplayCarouselScreenState
                     widget.displayUnits[index]['wzrk_id']?.toString() ?? '';
                 if (unitId.isNotEmpty) {
                   widget.onUnitViewed(unitId);
+                  // Track display unit viewed event
+                  CleverTapPlugin.pushDisplayUnitViewedEvent(unitId);
                 }
               },
               itemCount: widget.displayUnits.length,
@@ -159,11 +162,15 @@ class _NativeDisplayCarouselScreenState
                           currentUnit['content'] as List<dynamic>? ?? [];
                       if (content.isNotEmpty) {
                         final contentItem = content[_currentContentIndex];
+                        String unitId =
+                            currentUnit['wzrk_id']?.toString() ?? '';
+                        // Track display unit clicked event
+                        CleverTapPlugin.pushDisplayUnitClickedEvent(unitId);
                         widget.onContentClick(
                           contentItem is Map<String, dynamic>
                               ? contentItem
                               : Map<String, dynamic>.from(contentItem as Map),
-                          currentUnit['wzrk_id']?.toString() ?? '',
+                          unitId,
                         );
                       }
                     },
@@ -519,6 +526,8 @@ class _NativeDisplayCarouselScreenState
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
+                    // Track display unit clicked event
+                    CleverTapPlugin.pushDisplayUnitClickedEvent(unitId);
                     widget.onContentClick(item, unitId);
                   },
                   child: Container(),
