@@ -2,23 +2,15 @@ import 'package:clevertap_plugin/clevertap_plugin.dart';
 import 'package:flutter/material.dart';
 import 'main.dart';
 
-class CustomHtmlPage extends StatefulWidget {
-  const CustomHtmlPage({super.key});
+class RichPushPage extends StatefulWidget {
+  const RichPushPage({super.key});
 
   @override
-  State<CustomHtmlPage> createState() => _CustomHtmlPageState();
+  State<RichPushPage> createState() => _RichPushPageState();
 }
 
-class _CustomHtmlPageState extends State<CustomHtmlPage> {
-  final TextEditingController _eventController = TextEditingController();
-
-  @override
-  void dispose() {
-    _eventController.dispose();
-    super.dispose();
-  }
-
-  void _triggerEvent(String eventName, String message) {
+class _RichPushPageState extends State<RichPushPage> {
+  void _triggerRichPushEvent(String eventName, String message) {
     try {
       CleverTapPlugin.recordEvent(eventName, {});
       _showAppSnackBar(message: message, type: SnackType.success);
@@ -64,21 +56,8 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
     );
   }
 
-  void _triggerEventFromText() {
-    final eventName = _eventController.text.trim();
-    if (eventName.isNotEmpty) {
-      _triggerEvent(eventName, "Event '$eventName' triggered");
-      _eventController.clear();
-    } else {
-      _showAppSnackBar(
-        message: "Please enter an event name",
-        type: SnackType.error,
-      );
-    }
-  }
-
   Widget _buildActionCard({
-    required VoidCallback? onPressed,
+    required VoidCallback onPressed,
     required IconData icon,
     required String label,
     required String subtitle,
@@ -162,7 +141,7 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
         ),
         centerTitle: true,
         title: const Text(
-          'Custom HTML In-Apps',
+          'Rich Push Templates',
           style: TextStyle(
             color: AppColors.textPrimary,
             fontSize: 17,
@@ -203,13 +182,13 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                       child: Column(
                         children: [
                           Icon(
-                            Icons.html_rounded,
+                            Icons.notifications_active_outlined,
                             size: 48,
-                            color: AppColors.accent,
+                            color: AppColors.rose,
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            'Custom HTML In-Apps',
+                            'Push Notification Templates',
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineSmall
@@ -221,7 +200,7 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                           ),
                           const SizedBox(height: 8),
                           const Text(
-                            'Trigger events to show HTML in-app messages',
+                            'Trigger rich media push notifications with various templates',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,
@@ -234,119 +213,48 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Custom Event Input Section
+                  // Basic Templates Section
                   _buildSectionHeader(
-                    label: 'Custom Event',
-                    icon: Icons.edit_outlined,
-                    iconColor: AppColors.accent,
+                    label: 'Basic Templates',
+                    icon: Icons.layers_outlined,
+                    iconColor: AppColors.info,
                   ),
                   const SizedBox(height: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppColors.surface,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: AppColors.borderSubtle),
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: _eventController,
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 14,
-                          ),
-                          decoration: InputDecoration(
-                            labelText: 'Enter Event Name',
-                            labelStyle: const TextStyle(
-                              color: AppColors.textSecondary,
-                            ),
-                            prefixIcon: const Icon(
-                              Icons.event_outlined,
-                              color: AppColors.accent,
-                              size: 20,
-                            ),
-                            filled: true,
-                            fillColor: AppColors.surfaceElevated,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: AppColors.borderDefault,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: AppColors.borderDefault,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: const BorderSide(
-                                color: AppColors.borderFocus,
-                                width: 1.5,
-                              ),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
-                            ),
-                          ),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    children: [
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Rich Push",
+                          "Basic push notification triggered",
                         ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 48,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  AppColors.accent,
-                                  AppColors.accentSoft,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: _triggerEventFromText,
-                                borderRadius: BorderRadius.circular(10),
-                                child: const Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.send_rounded,
-                                        color: AppColors.textOnAccent,
-                                        size: 18,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        'Fire Event',
-                                        style: TextStyle(
-                                          color: AppColors.textOnAccent,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: -0.2,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                        icon: Icons.message_outlined,
+                        label: 'Basic',
+                        subtitle: 'Simple text notification',
+                        color: AppColors.info,
+                      ),
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Zero Bezel Push",
+                          "Zero Bezel push triggered",
                         ),
-                      ],
-                    ),
+                        icon: Icons.crop_square_rounded,
+                        label: 'Zero Bezel',
+                        subtitle: 'Full-width image notification',
+                        color: AppColors.sky,
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 24),
 
-                  // Predefined Events Section
+                  // Carousel Section
                   _buildSectionHeader(
-                    label: 'Predefined Events',
-                    icon: Icons.event,
+                    label: 'Carousel Templates',
+                    icon: Icons.image_outlined,
                     iconColor: AppColors.teal,
                   ),
                   const SizedBox(height: 10),
@@ -358,64 +266,138 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                     mainAxisSpacing: 12,
                     children: [
                       _buildActionCard(
-                        onPressed: () => _triggerEvent(
-                          "NPS Rating",
-                          "NPS Rating in-app triggered",
+                        onPressed: () => _triggerRichPushEvent(
+                          "Manual Carousel Push",
+                          "Manual Carousel push triggered",
                         ),
-                        icon: Icons.star_outline_rounded,
-                        label: 'NPS Rating',
-                        subtitle: 'Star rating in-app',
+                        icon: Icons.swipe_rounded,
+                        label: 'Manual Carousel',
+                        subtitle: 'User-controlled carousel',
                         color: AppColors.teal,
                       ),
                       _buildActionCard(
-                        onPressed: () => _triggerEvent(
-                          "Scratch Card",
-                          "Scratch Card in-app triggered",
+                        onPressed: () => _triggerRichPushEvent(
+                          "Auto Carousel Push",
+                          "Auto Carousel push triggered",
                         ),
-                        icon: Icons.card_giftcard_rounded,
-                        label: 'Scratch Card',
-                        subtitle: 'Interactive scratch card',
+                        icon: Icons.autorenew_rounded,
+                        label: 'Auto Carousel',
+                        subtitle: 'Auto-scrolling images',
+                        color: AppColors.emerald,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Timer Templates Section
+                  _buildSectionHeader(
+                    label: 'Timer Templates',
+                    icon: Icons.timer_outlined,
+                    iconColor: AppColors.amber,
+                  ),
+                  const SizedBox(height: 10),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    children: [
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Timer Dynamic Countdown",
+                          "Dynamic countdown timer triggered",
+                        ),
+                        icon: Icons.hourglass_bottom_rounded,
+                        label: 'Timer (Countdown)',
+                        subtitle: 'Dynamic countdown timer',
                         color: AppColors.amber,
                       ),
                       _buildActionCard(
-                        onPressed: () => _triggerEvent(
-                          "Draggable Video",
-                          "Draggable Video in-app triggered",
+                        onPressed: () => _triggerRichPushEvent(
+                          "Timer Until Time",
+                          "Timer until specified time triggered",
                         ),
-                        icon: Icons.play_circle_outline_rounded,
-                        label: 'Draggable Video',
-                        subtitle: 'Video with drag control',
-                        color: AppColors.sky,
-                      ),
-                      _buildActionCard(
-                        onPressed: () => _triggerEvent(
-                          "Timer InApp",
-                          "Timer in-app triggered",
-                        ),
-                        icon: Icons.timer_outlined,
-                        label: 'Timer InApp',
-                        subtitle: 'Countdown timer in-app',
+                        icon: Icons.schedule_rounded,
+                        label: 'Timer (Until Time)',
+                        subtitle: 'Until mentioned time in seconds',
                         color: AppColors.coral,
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Interactive Templates Section
+                  _buildSectionHeader(
+                    label: 'Interactive Templates',
+                    icon: Icons.touch_app_outlined,
+                    iconColor: AppColors.violet,
+                  ),
+                  const SizedBox(height: 10),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    children: [
                       _buildActionCard(
-                        onPressed: () => _triggerEvent(
-                          "Native Scratch Card",
-                          "Native Scratch Card triggered",
+                        onPressed: () => _triggerRichPushEvent(
+                          "Five Icons Push",
+                          "Five-action push triggered",
                         ),
-                        icon: Icons.screen_search_desktop_rounded,
-                        label: 'Native Scratch',
-                        subtitle: 'Native scratch card',
+                        icon: Icons.widgets_outlined,
+                        label: 'Five Icons',
+                        subtitle: 'Multiple action buttons',
                         color: AppColors.violet,
                       ),
                       _buildActionCard(
-                        onPressed: () => _triggerEvent(
-                          "Test InApp",
-                          "Test in-app message triggered",
+                        onPressed: () => _triggerRichPushEvent(
+                          "Rating Push",
+                          "Star rating push triggered",
                         ),
-                        icon: Icons.message_outlined,
-                        label: 'Test In-App',
-                        subtitle: 'Test message template',
-                        color: AppColors.emerald,
+                        icon: Icons.star_outline_rounded,
+                        label: 'Rating',
+                        subtitle: 'Star rating in-push interaction',
+                        color: AppColors.pink,
+                      ),
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Input Push",
+                          "Input field push triggered",
+                        ),
+                        icon: Icons.input_rounded,
+                        label: 'Input',
+                        subtitle: 'User text input field',
+                        color: AppColors.sky,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
+                  // Product Templates Section
+                  _buildSectionHeader(
+                    label: 'Product Templates',
+                    icon: Icons.shopping_bag_outlined,
+                    iconColor: AppColors.lime,
+                  ),
+                  const SizedBox(height: 10),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    children: [
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Product Display Push",
+                          "Product display push triggered",
+                        ),
+                        icon: Icons.local_offer_rounded,
+                        label: 'Product Display',
+                        subtitle: 'Product showcase template',
+                        color: AppColors.lime,
                       ),
                     ],
                   ),
