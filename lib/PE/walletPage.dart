@@ -7,7 +7,7 @@ import 'bill_payment_page.dart';
 import 'rewards_page.dart';
 
 class TrueMoneyPage extends StatefulWidget {
-  const TrueMoneyPage({Key? key}) : super(key: key);
+  const TrueMoneyPage({super.key});
 
   @override
   State<TrueMoneyPage> createState() => _TrueMoneyPageState();

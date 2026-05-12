@@ -14,10 +14,6 @@ import 'PE/walletPage.dart';
 import 'rich_push_page.dart';
 import 'secondPage.dart';
 
-// ─────────────────────────────────────────────
-// DESIGN SYSTEM
-// ─────────────────────────────────────────────
-
 class AppColors {
   AppColors._();
 
@@ -236,10 +232,6 @@ Future<void> _sendLocationToCleverTap() async {
   }
 }
 
-// ─────────────────────────────────────────────
-// ROOT APP
-// ─────────────────────────────────────────────
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -253,10 +245,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// ─────────────────────────────────────────────
-// MAIN PAGE
-// ─────────────────────────────────────────────
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -356,8 +344,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
   }
 
-  // ── Initialization ──────────────────────────
-
   void _initializeCleverTap() {
     CleverTapPlugin clevertapPlugin = CleverTapPlugin();
 
@@ -376,8 +362,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     clevertapPlugin.setCleverTapDisplayUnitsLoadedHandler(onDisplayUnitsLoaded);
   }
 
-  // ── Helpers ─────────────────────────────────
-
   List<Map<String, dynamic>> _convertToMapList(List<dynamic>? data) {
     if (data == null) return [];
     return data.map((item) {
@@ -386,8 +370,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       return <String, dynamic>{};
     }).toList();
   }
-
-  // ── Auth ────────────────────────────────────
 
   void _login() async {
     try {
@@ -428,8 +410,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       }
     });
   }
-
-  // ── Events ──────────────────────────────────
 
   void _recordNotificationEvent() {
     try {
@@ -580,8 +560,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
   }
 
-  // ── Inbox ───────────────────────────────────
-
   void _openInbox() {
     try {
       CleverTapPlugin.showInbox({
@@ -601,8 +579,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void _inboxDidInitialize() {
     debugPrint("Inbox initialized");
   }
-
-  // ── Navigation ──────────────────────────────
 
   void _navigateToCustomHTMLPage() {
     Navigator.of(context).push(_premiumRoute(const CustomHtmlPage()));
@@ -659,8 +635,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  // ── Example popup ───────────────────────────
-
   void _showExamplePopup() {
     CleverTapPlugin.suspendInAppNotifications();
     showDialog(
@@ -682,8 +656,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-  // ── Snackbar system ─────────────────────────
 
   void _showAppSnackBar({
     required String message,
@@ -721,10 +693,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-  // ─────────────────────────────────────────────
-  // BUILD
-  // ─────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
@@ -947,8 +915,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     );
   }
 
-  // ── Sliver App Bar ──────────────────────────
-
   Widget _buildSliverAppBar() {
     return SliverAppBar(
       expandedHeight: 120,
@@ -972,8 +938,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-  // ── Section builder ─────────────────────────
 
   Widget _buildSection({
     required String label,
@@ -1013,10 +977,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 }
 
-// ─────────────────────────────────────────────
-// REUSABLE COMPONENTS
-// ─────────────────────────────────────────────
-
 enum SnackType {
   success(Icons.check_circle_outline_rounded, AppColors.success),
   error(Icons.error_outline_rounded, AppColors.error),
@@ -1027,8 +987,6 @@ enum SnackType {
   final IconData icon;
   final Color color;
 }
-
-// ── Header Hero ─────────────────────────────
 
 class _HeaderHero extends StatelessWidget {
   const _HeaderHero({
@@ -1225,8 +1183,6 @@ class _ActionTileData {
   final Widget? trailing;
 }
 
-// ── Action List Tile ─────────────────────────
-
 class _ActionListTile extends StatefulWidget {
   const _ActionListTile({required this.data});
   final _ActionTileData data;
@@ -1356,8 +1312,6 @@ class _DisplayUnitsBanner extends StatelessWidget {
     );
   }
 }
-
-// ── Premium Dialog ───────────────────────────
 
 class _PremiumDialog extends StatelessWidget {
   const _PremiumDialog({

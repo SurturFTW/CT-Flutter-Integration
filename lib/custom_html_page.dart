@@ -379,7 +379,7 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                       ),
                       _buildActionCard(
                         onPressed: () => _triggerEvent(
-                          "Draggable Video",
+                          "Cart View",
                           "Draggable Video in-app triggered",
                         ),
                         icon: Icons.play_circle_outline_rounded,
@@ -409,7 +409,7 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                       ),
                       _buildActionCard(
                         onPressed: () => _triggerEvent(
-                          "Test InApp",
+                          "In-App Test",
                           "Test in-app message triggered",
                         ),
                         icon: Icons.message_outlined,
