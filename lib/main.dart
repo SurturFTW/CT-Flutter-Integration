@@ -13,6 +13,7 @@ import 'custom_html_page.dart';
 import 'PE/walletPage.dart';
 import 'rich_push_page.dart';
 import 'secondPage.dart';
+import 'handleClick.dart';
 
 class AppColors {
   AppColors._();
@@ -411,6 +412,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
+  void _getCTID() async {
+    final ctId = await CleverTapPlugin.getCleverTapID();
+    _showAppSnackBar(
+      message: "CleverTap ID: ${ctId ?? 'N/A'}",
+      type: SnackType.info,
+    );
+    debugPrint("CleverTap ID: $ctId");
+  }
+
   void _recordNotificationEvent() {
     try {
       CleverTapPlugin.recordEvent("Notification Event", {});
@@ -733,6 +743,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         icon: Icons.notifications_outlined,
                         color: AppColors.violet,
                         onTap: localAlertPushPrimer,
+                      ),
+                      _ActionTileData(
+                        label: 'Get CT ID',
+                        subtitle: 'Get CleverTap ID for this device',
+                        icon: Icons.perm_identity_outlined,
+                        color: AppColors.violet,
+                        onTap: _getCTID,
                       ),
                     ],
                   ),
