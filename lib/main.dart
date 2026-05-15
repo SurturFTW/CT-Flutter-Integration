@@ -177,10 +177,7 @@ class AppTheme {
   }
 }
 
-// ─────────────────────────────────────────────
 // ENTRY POINT
-// ─────────────────────────────────────────────
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -191,13 +188,14 @@ void main() async {
     systemNavigationBarIconBrightness: Brightness.light,
   ));
 
-  await _requestPermissions();
-  runApp(const MyApp());
-
+  CleverTapPlugin.setDebugLevel(3);
   CleverTapPlugin.onKilledStateNotificationClicked(
       _onKilledStateNotificationClickedHandler);
-  CleverTapPlugin.setDebugLevel(3);
+
   await Firebase.initializeApp();
+  await _requestPermissions();
+
+  runApp(const MyApp());
 }
 
 void pushClickedPayloadReceived(Map<String, dynamic> notificationPayload) {
