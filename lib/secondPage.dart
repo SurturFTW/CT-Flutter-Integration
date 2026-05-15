@@ -6,11 +6,11 @@ class DeepLinkPage extends StatelessWidget {
   final String? message;
 
   const DeepLinkPage({
-    Key? key,
+    super.key,
     required this.type,
     required this.title,
     required this.message,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

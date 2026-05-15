@@ -5,9 +5,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'bill_payment_page.dart';
 import 'rewards_page.dart';
+import '../main.dart';
 
 class TrueMoneyPage extends StatefulWidget {
-  const TrueMoneyPage({Key? key}) : super(key: key);
+  const TrueMoneyPage({super.key});
 
   @override
   State<TrueMoneyPage> createState() => _TrueMoneyPageState();
@@ -93,11 +94,6 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
       }
     });
 
-    // Step 3: Sync variables to dashboard (ONLY in debug mode)
-    // Uncomment this line ONLY when you want to sync to dashboard
-    // CleverTapPlugin.syncVariables();
-
-    // Step 4: Fetch latest values from server
     fetchVariables();
   }
 
@@ -161,8 +157,9 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
             _parseColor(appTheme['iconTintHex'], const Color(0xFFFFD700));
         _buttonColor =
             _parseColor(appTheme['buttonColorHex'], const Color(0xFFFFD700));
+        // Use light text for dark backgrounds, dark text for light backgrounds
         _textColor =
-            _parseColor(appTheme['textColorHex'], const Color(0xFF000000));
+            _shouldUseLightText(_buttonColor) ? Colors.white : Colors.black87;
 
         print('Theme applied: $appTheme');
       }
@@ -201,6 +198,13 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
     }
   }
 
+  bool _shouldUseLightText(Color color) {
+    // Calculate luminance to determine if text should be light or dark
+    double luminance =
+        (0.299 * color.red + 0.587 * color.green + 0.114 * color.blue) / 255;
+    return luminance < 0.5;
+  }
+
   void _startCarouselTimer() {
     _carouselTimer?.cancel();
     if (_bannerImageUrls.length <= 1) return;
@@ -222,199 +226,251 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildHeader(),
-                const SizedBox(height: 20),
-                _buildCardSection(),
-                const SizedBox(height: 30),
-                _buildFirstIconRow(),
-                const SizedBox(height: 20),
-                _buildSecondIconRow(),
-                const SizedBox(height: 30),
-                _buildImageCarousel(),
-                const SizedBox(height: 35),
-                _buildPayNowButton(),
-                const SizedBox(height: 30),
-                _buildRefreshConfigButton(),
-                const SizedBox(height: 20),
-                _buildQuickUserSwitcher(),
-                const SizedBox(height: 20),
-                _buildSwitchUserButton(),
-                const SizedBox(height: 40),
-              ],
+  void _showAppSnackBar({
+    required String message,
+    required SnackType type,
+  }) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(type.icon, size: 16, color: type.color),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                message,
+                style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+        backgroundColor: AppColors.surfaceHighlight,
+        behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 2),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: type.color.withOpacity(0.3)),
+        ),
       ),
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      height: 220,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [_headerGradientTop, _headerGradientBottom],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.midnight,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceHighlight,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.borderSubtle),
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios_rounded,
+              size: 16,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ),
+        centerTitle: true,
+        title: const Text(
+          'Product Experience',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            letterSpacing: -0.3,
+          ),
         ),
       ),
-      child: Stack(
-        children: [
-          // Decorative circles
-          Positioned(
-            top: -30,
-            left: -40,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 40,
-            right: -10,
-            child: Container(
-              width: 120,
-              height: 120,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.07),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -30,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.10),
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ),
-          ),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Column(
+          children: [
+            _buildCardSection(),
+            const SizedBox(height: 24),
+            _buildFirstIconRow(),
+            const SizedBox(height: 20),
+            _buildSecondIconRow(),
+            const SizedBox(height: 24),
+            _buildImageCarousel(),
+            const SizedBox(height: 24),
+            _buildCreditLimitSection(),
+            const SizedBox(height: 24),
+            _buildPayNowButton(),
+            const SizedBox(height: 16),
+            _buildRefreshConfigButton(),
+            const SizedBox(height: 24),
+            _buildQuickUserSwitcher(),
+            const SizedBox(height: 16),
+            _buildSwitchUserButton(),
+            const SizedBox(height: 32),
+          ],
+        ),
+      ),
+    );
+  }
 
-          // Logo and title
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.account_balance_wallet,
-                        size: 40,
-                        color: _iconTintColor,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'Wallet',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+  Widget _buildCreditLimitSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.borderSubtle),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Credit Limit',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Icon(
+                  Icons.info_outline_rounded,
+                  color: AppColors.textTertiary,
+                  size: 18,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              _creditLimit,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 28,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.5,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: LinearProgressIndicator(
+                value: 0.75,
+                minHeight: 8,
+                backgroundColor: AppColors.borderDefault,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  _buttonColor,
                 ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Used: ₹1,25,000',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  'Available: $_availableCredit',
+                  style: TextStyle(
+                    color: AppColors.success,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildCardSection() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      height: 180,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [_cardGradientTop, _cardGradientBottom],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+        height: 200,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [_cardGradientTop, _cardGradientBottom],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.15),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Decorative circles
-          Positioned(
-            left: -30,
-            top: -20,
-            child: Container(
-              width: 140,
-              height: 140,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.08),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            right: -10,
-            top: 30,
-            child: Container(
-              width: 90,
-              height: 90,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.06),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -20,
-            left: 0,
-            right: 0,
-            child: Center(
+        child: Stack(
+          children: [
+            // Decorative circles
+            Positioned(
+              left: -30,
+              top: -20,
               child: Container(
-                width: 60,
-                height: 60,
+                width: 140,
+                height: 140,
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withOpacity(0.08),
                   shape: BoxShape.circle,
                 ),
               ),
             ),
-          ),
-
-          // Card content - could be an image or custom design
-          Center(
-            child: Padding(
+            Positioned(
+              right: -10,
+              top: 30,
+              child: Container(
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.06),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: -20,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.05),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ),
+            // Card content
+            Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,8 +551,8 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -549,7 +605,6 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
     return InkWell(
       onTap: () {
         print('✅ $title tapped');
-        // Add haptic feedback
         HapticFeedback.lightImpact();
 
         if (title == 'Pay Bills') {
@@ -585,7 +640,7 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
               width: 60,
               height: 60,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: _buttonColor,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
@@ -597,7 +652,7 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
               ),
               child: Icon(
                 icon,
-                color: _iconTintColor,
+                color: _textColor,
                 size: 28,
               ),
             ),
@@ -607,7 +662,7 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
-                color: _textColor,
+                color: AppColors.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -620,24 +675,28 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
   Widget _buildImageCarousel() {
     if (_bannerImageUrls.isEmpty) {
       return Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20),
-        height: 200,
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        height: 180,
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.borderSubtle),
         ),
         child: const Center(
           child: Text(
             'No banners available',
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 14,
+            ),
           ),
         ),
       );
     }
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      height: 200,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      height: 180,
       child: Stack(
         children: [
           PageView.builder(
@@ -667,13 +726,13 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
                     imageUrl: _bannerImageUrls[index],
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
-                      color: Colors.grey[300],
+                      color: AppColors.surfaceElevated,
                       child: const Center(
                         child: CircularProgressIndicator(),
                       ),
                     ),
                     errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[300],
+                      color: AppColors.surfaceElevated,
                       child: const Icon(Icons.error, color: Colors.red),
                     ),
                   ),
@@ -681,7 +740,6 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
               );
             },
           ),
-
           // Page indicators
           Positioned(
             bottom: 12,
@@ -712,30 +770,44 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
 
   Widget _buildPayNowButton() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: SizedBox(
         width: double.infinity,
-        height: 55,
-        child: ElevatedButton(
-          onPressed: () {
-            print('Pay Now tapped');
-            // Add payment logic here
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: _buttonColor,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+        height: 50,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [_buttonColor, _buttonColor.withOpacity(0.8)],
             ),
-            elevation: 4,
-            shadowColor: _buttonColor.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: _buttonColor.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          child: const Text(
-            'Pay Credit Card Bill',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                _showAppSnackBar(
+                  message: 'Pay Credit Card Bill initiated',
+                  type: SnackType.success,
+                );
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Center(
+                child: Text(
+                  'Pay Credit Card Bill',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: _textColor,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -745,26 +817,32 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
 
   Widget _buildRefreshConfigButton() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: OutlinedButton.icon(
-        icon: Icon(Icons.refresh, color: _buttonColor),
-        label: Text(
-          'Refresh Config from Dashboard',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: _buttonColor,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: OutlinedButton.icon(
+          icon: Icon(Icons.refresh, color: _buttonColor),
+          label: Text(
+            'Refresh Config',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: _buttonColor,
+            ),
           ),
-        ),
-        onPressed: () {
-          print('Refreshing config from CleverTap Dashboard...');
-          fetchVariables();
-        },
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          side: BorderSide(color: _buttonColor, width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+          onPressed: () {
+            _showAppSnackBar(
+              message: 'Refreshing config from dashboard...',
+              type: SnackType.info,
+            );
+            fetchVariables();
+          },
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: _buttonColor, width: 1.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
       ),
@@ -782,24 +860,27 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
           const Text(
             'Quick Switch:',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Colors.grey,
+              color: AppColors.textSecondary,
+              letterSpacing: 0.5,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
           Wrap(
             spacing: 8,
+            runSpacing: 8,
             children: quickUsers
                 .map(
                   (userId) => FilterChip(
                     label: Text(
-                      userId.split('@')[0], // Show only the part before @
+                      userId,
                       style: TextStyle(
                         color: _currentUserId == userId
                             ? Colors.white
                             : _buttonColor,
                         fontSize: 12,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                     selected: _currentUserId == userId,
@@ -811,13 +892,17 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
                         CleverTapPlugin.onUserLogin({
                           'Identity': userId,
                         });
-                        print('Quick switched to user: $userId');
+                        _showAppSnackBar(
+                          message: 'Switched to user: $userId',
+                          type: SnackType.success,
+                        );
                         fetchVariables();
                       }
                     },
                     selectedColor: _buttonColor,
                     checkmarkColor: Colors.white,
                     side: BorderSide(color: _buttonColor),
+                    backgroundColor: AppColors.surface,
                   ),
                 )
                 .toList(),
@@ -829,36 +914,41 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
 
   Widget _buildSwitchUserButton() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: OutlinedButton.icon(
-        icon: Icon(Icons.person, color: _buttonColor),
-        label: Text(
-          'Switch User',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            color: _buttonColor,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: SizedBox(
+        width: double.infinity,
+        height: 50,
+        child: OutlinedButton.icon(
+          icon: Icon(Icons.person, color: _buttonColor),
+          label: Text(
+            'Switch User',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: _buttonColor,
+            ),
           ),
-        ),
-        onPressed: () async {
-          final newUserId = await _showUserIdDialog();
-          if (newUserId != null && newUserId.isNotEmpty) {
-            setState(() {
-              _currentUserId = newUserId;
-            });
-            // Call CleverTap onUserLogin
-            CleverTapPlugin.onUserLogin({
-              'Identity': newUserId,
-            });
-            print('Switched to user: $newUserId');
-            fetchVariables(); // Refresh variables for new user
-          }
-        },
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-          side: BorderSide(color: _buttonColor, width: 2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+          onPressed: () async {
+            final newUserId = await _showUserIdDialog();
+            if (newUserId != null && newUserId.isNotEmpty) {
+              setState(() {
+                _currentUserId = newUserId;
+              });
+              CleverTapPlugin.onUserLogin({
+                'Identity': newUserId,
+              });
+              _showAppSnackBar(
+                message: 'Switched to user: $newUserId',
+                type: SnackType.success,
+              );
+              fetchVariables();
+            }
+          },
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: _buttonColor, width: 1.5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
       ),
@@ -871,22 +961,45 @@ class _TrueMoneyPageState extends State<TrueMoneyPage>
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Switch User'),
+          backgroundColor: AppColors.surface,
+          title: const Text(
+            'Switch User',
+            style: TextStyle(color: AppColors.textPrimary),
+          ),
           content: TextField(
             autofocus: true,
-            decoration: const InputDecoration(
+            style: const TextStyle(color: AppColors.textPrimary),
+            decoration: InputDecoration(
               labelText: 'Enter User Email/ID',
+              labelStyle: const TextStyle(color: AppColors.textSecondary),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: AppColors.borderDefault),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             onChanged: (value) => userId = value,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: AppColors.textSecondary),
+              ),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _buttonColor,
+              ),
               onPressed: () => Navigator.of(context).pop(userId),
-              child: const Text('Switch'),
+              child: const Text(
+                'Switch',
+                style: TextStyle(color: Colors.black87),
+              ),
             ),
           ],
         );
