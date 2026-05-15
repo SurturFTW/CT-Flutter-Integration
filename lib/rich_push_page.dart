@@ -375,6 +375,84 @@ class _RichPushPageState extends State<RichPushPage> {
                   ),
                   const SizedBox(height: 24),
 
+                  // Deep Link Templates Section
+                  _buildSectionHeader(
+                    label: 'Deep Link Templates',
+                    icon: Icons.link_rounded,
+                    iconColor: AppColors.emerald,
+                  ),
+                  const SizedBox(height: 10),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    children: [
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Notification Event",
+                          "Phone call deep link push triggered",
+                        ),
+                        icon: Icons.phone_outlined,
+                        label: 'Phone Call',
+                        subtitle: 'Initiates phone call',
+                        color: AppColors.emerald,
+                      ),
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "SMS Push",
+                          "SMS deep link push triggered",
+                        ),
+                        icon: Icons.sms_outlined,
+                        label: 'Send SMS',
+                        subtitle: 'Opens SMS composer',
+                        color: AppColors.sky,
+                      ),
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Email Push",
+                          "Email deep link push triggered",
+                        ),
+                        icon: Icons.mail_outline_rounded,
+                        label: 'Send Email',
+                        subtitle: 'Opens email composer',
+                        color: AppColors.rose,
+                      ),
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "WhatsApp Push",
+                          "WhatsApp deep link push triggered",
+                        ),
+                        icon: Icons.chat_outlined,
+                        label: 'WhatsApp',
+                        subtitle: 'Opens WhatsApp chat',
+                        color: AppColors.lime,
+                      ),
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Maps Push",
+                          "Google Maps deep link push triggered",
+                        ),
+                        icon: Icons.location_on_outlined,
+                        label: 'Google Maps',
+                        subtitle: 'Opens navigation',
+                        color: AppColors.teal,
+                      ),
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Calendar Push",
+                          "Calendar deep link push triggered",
+                        ),
+                        icon: Icons.calendar_today_outlined,
+                        label: 'Calendar Event',
+                        subtitle: 'Opens calendar app',
+                        color: AppColors.amber,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+
                   // Product Templates Section
                   _buildSectionHeader(
                     label: 'Product Templates',

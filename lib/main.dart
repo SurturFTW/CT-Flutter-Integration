@@ -200,11 +200,13 @@ void main() async {
 
 void pushClickedPayloadReceived(Map<String, dynamic> notificationPayload) {
   debugPrint("pushClickedPayloadReceived: $notificationPayload");
+  handleNotificationClick(notificationPayload);
 }
 
 @pragma('vm:entry-point')
 void _onKilledStateNotificationClickedHandler(Map<String, dynamic> map) async {
   debugPrint("Notification Payload received: $map");
+  handleNotificationClick(map);
 }
 
 Future<void> _requestPermissions() async {
