@@ -2,13 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSExtension</key>
-
 	<key>CleverTapAccountID</key>
-	<string>TEST-865-ZRW-7K7Z</string> 
+	<string>TEST-865-ZRW-7K7Z</string>
 	<key>CleverTapToken</key>
 	<string>TEST-021-56b</string>
 
+	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
 		<dict>
@@ -17,7 +16,7 @@
 			<key>UNNotificationExtensionDefaultContentHidden</key>
 			<true/>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
-			<real>0.10000000000000001</real>
+			<real>0.1</real>
 		</dict>
 		<key>NSExtensionMainStoryboard</key>
 		<string>MainInterface</string>

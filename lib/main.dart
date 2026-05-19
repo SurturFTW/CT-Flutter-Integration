@@ -1,16 +1,19 @@
+import 'dart:io';
+
 import 'package:clevertap_plugin/clevertap_plugin.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'dart:math';
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
-import 'PE/walletPage.dart';
+import 'PE/Fintech/walletPage.dart';
+import 'PE/OTT/OTTPage.dart';
 import 'rich_push_page.dart';
 import 'secondPage.dart';
 import 'handleClick.dart';
@@ -192,7 +195,10 @@ void main() async {
   CleverTapPlugin.onKilledStateNotificationClicked(
       _onKilledStateNotificationClickedHandler);
 
-  await Firebase.initializeApp();
+  if (Platform.isAndroid) {
+    await Firebase.initializeApp();
+  }
+
   await _requestPermissions();
 
   runApp(const MyApp());
@@ -610,6 +616,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     Navigator.of(context).push(_premiumRoute(const TrueMoneyPage()));
   }
 
+  void _navigateToOTTPage() {
+    Navigator.of(context).push(_premiumRoute(const OTTPage()));
+  }
+
   void _markDisplayUnitAsViewed(String unitId) {
     CleverTapPlugin.pushDisplayUnitViewedEvent(unitId);
     _showAppSnackBar(message: "Unit viewed: $unitId", type: SnackType.info);
@@ -903,8 +913,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         ),
                       ),
                       _ActionTileData(
+                        label: 'Show Popup',
+                        subtitle: 'Example dialog with actions',
+                        icon: Icons.auto_awesome_outlined,
+                        color: AppColors.amber,
+                        onTap: _showExamplePopup,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  _buildSection(
+                    label: 'Product Experiences',
+                    icon: Icons.star_outline_rounded,
+                    iconColor: AppColors.emerald,
+                    tiles: [
+                      _ActionTileData(
                         label: 'FinTech PE',
-                        subtitle: 'TrueMoney wallet experience',
+                        subtitle: 'Fintech product experience demo',
                         icon: Icons.account_balance_wallet_outlined,
                         color: AppColors.accent,
                         onTap: _navigateToTrueMoneyPage,
@@ -915,11 +940,28 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         ),
                       ),
                       _ActionTileData(
-                        label: 'Show Popup',
-                        subtitle: 'Example dialog with actions',
-                        icon: Icons.auto_awesome_outlined,
-                        color: AppColors.amber,
-                        onTap: _showExamplePopup,
+                        label: 'OTT PE',
+                        subtitle: 'OTT product experience demo',
+                        icon: Icons.movie_outlined,
+                        color: AppColors.accent,
+                        onTap: _navigateToOTTPage,
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 12,
+                          color: AppColors.textTertiary,
+                        ),
+                      ),
+                      _ActionTileData(
+                        label: 'More PE Demos',
+                        subtitle: 'Coming soon',
+                        icon: Icons.upcoming_outlined,
+                        color: AppColors.accent,
+                        onTap: _navigateToOTTPage,
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 12,
+                          color: AppColors.textTertiary,
+                        ),
                       ),
                     ],
                   ),

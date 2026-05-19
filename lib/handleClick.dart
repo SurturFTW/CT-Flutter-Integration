@@ -40,7 +40,8 @@ void _handleDeepLink(String deepLink) {
     _handleGoogleNavigation(deepLink);
   } else if (deepLink.startsWith('https://wa.me/')) {
     _handleWhatsApp(deepLink);
-  } else if (_isCalendarLink(deepLink)) {
+  } else if (deepLink.contains('calendar.google.com') ||
+      _isCalendarLink(deepLink)) {
     _handleCalendarEvent(deepLink);
   } else if (deepLink.startsWith('http://') ||
       deepLink.startsWith('https://')) {
@@ -135,7 +136,15 @@ bool _isCalendarLink(String deepLink) {
 /// Handles calendar event deep links
 void _handleCalendarEvent(String deepLink) {
   try {
-    if (deepLink.startsWith('calendar://')) {
+    if (deepLink.contains('calendar.google.com')) {
+      // Google Calendar link
+      final uri = Uri.parse(deepLink);
+      launchUrl(uri, mode: LaunchMode.externalApplication).then((_) {
+        debugPrint('Google Calendar opened: $deepLink');
+      }).catchError((e) {
+        debugPrint('Cannot launch Google Calendar: $e');
+      });
+    } else if (deepLink.startsWith('calendar://')) {
       final uri = Uri.parse(deepLink);
       launchUrl(uri).then((_) {
         debugPrint('Calendar app opened: $deepLink');
