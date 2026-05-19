@@ -10,175 +10,18 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'config/app_colors.dart';
+import 'config/app_theme.dart';
+import 'config/app_enums.dart';
+
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
+import 'rich_push_page.dart';
+import 'handleClick.dart';
+import 'secondPage.dart';
+
 import 'PE/Fintech/walletPage.dart';
 import 'PE/OTT/OTTPage.dart';
-import 'rich_push_page.dart';
-import 'secondPage.dart';
-import 'handleClick.dart';
-
-class AppColors {
-  AppColors._();
-
-  // Background layers
-  static const midnight = Color(0xFF080910);
-  static const surface = Color(0xFF10111C);
-  static const surfaceElevated = Color(0xFF181928);
-  static const surfaceHighlight = Color(0xFF1F2035);
-
-  // Borders
-  static const borderSubtle = Color(0xFF22243A);
-  static const borderDefault = Color(0xFF2E3050);
-  static const borderFocus = Color(0xFF6C63FF);
-
-  // Accent — electric indigo
-  static const accent = Color(0xFF6C63FF);
-  static const accentDim = Color(0x2A6C63FF);
-  static const accentSoft = Color(0xFF8B84FF);
-
-  // Semantic
-  static const success = Color(0xFF10B981);
-  static const successDim = Color(0x1F10B981);
-  static const warning = Color(0xFFF59E0B);
-  static const warningDim = Color(0x1FF59E0B);
-  static const error = Color(0xFFEF4444);
-  static const errorDim = Color(0x1FEF4444);
-  static const info = Color(0xFF38BDF8);
-  static const infoDim = Color(0x1F38BDF8);
-
-  // Category palette
-  static const violet = Color(0xFF8B5CF6);
-  static const violetDim = Color(0x1F8B5CF6);
-  static const teal = Color(0xFF14B8A6);
-  static const tealDim = Color(0x1F14B8A6);
-  static const rose = Color(0xFFF43F5E);
-  static const roseDim = Color(0x1FF43F5E);
-  static const amber = Color(0xFFF59E0B);
-  static const amberDim = Color(0x1FF59E0B);
-  static const sky = Color(0xFF0EA5E9);
-  static const skyDim = Color(0x1F0EA5E9);
-  static const emerald = Color(0xFF10B981);
-  static const emeraldDim = Color(0x1F10B981);
-  static const coral = Color(0xFFFF7A59);
-  static const coralDim = Color(0x1FFF7A59);
-  static const pink = Color(0xFFEC4899);
-  static const pinkDim = Color(0x1FEC4899);
-  static const lime = Color(0xFF84CC16);
-  static const limeDim = Color(0x1F84CC16);
-
-  // Text
-  static const textPrimary = Color(0xFFF0EFFF);
-  static const textSecondary = Color(0xFF9092AE);
-  static const textTertiary = Color(0xFF4B4E6B);
-  static const textOnAccent = Color(0xFFFFFFFF);
-}
-
-class AppTheme {
-  AppTheme._();
-
-  static ThemeData get dark {
-    return ThemeData(
-      useMaterial3: true,
-      brightness: Brightness.dark,
-      scaffoldBackgroundColor: AppColors.midnight,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.accent,
-        secondary: AppColors.teal,
-        surface: AppColors.surface,
-        onSurface: AppColors.textPrimary,
-        outline: AppColors.borderDefault,
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: false,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
-        titleTextStyle: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 17,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.3,
-        ),
-      ),
-      cardTheme: CardThemeData(
-        elevation: 0,
-        color: AppColors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.borderSubtle, width: 1),
-        ),
-      ),
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.surfaceHighlight,
-        contentTextStyle: const TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 13,
-          fontWeight: FontWeight.w500,
-        ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        behavior: SnackBarBehavior.floating,
-      ),
-      dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.surfaceElevated,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppColors.borderDefault),
-        ),
-      ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 32,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -1.2,
-        ),
-        headlineMedium: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 22,
-          fontWeight: FontWeight.w700,
-          letterSpacing: -0.6,
-        ),
-        titleLarge: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 17,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.3,
-        ),
-        titleMedium: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          letterSpacing: -0.2,
-        ),
-        bodyLarge: TextStyle(
-          color: AppColors.textSecondary,
-          fontSize: 15,
-          fontWeight: FontWeight.w400,
-        ),
-        bodyMedium: TextStyle(
-          color: AppColors.textSecondary,
-          fontSize: 13,
-          fontWeight: FontWeight.w400,
-        ),
-        labelLarge: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 13,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.1,
-        ),
-        labelSmall: TextStyle(
-          color: AppColors.textTertiary,
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.5,
-        ),
-      ),
-    );
-  }
-}
 
 // ENTRY POINT
 void main() async {
@@ -1034,17 +877,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ],
     );
   }
-}
-
-enum SnackType {
-  success(Icons.check_circle_outline_rounded, AppColors.success),
-  error(Icons.error_outline_rounded, AppColors.error),
-  info(Icons.info_outline_rounded, AppColors.info),
-  warning(Icons.warning_amber_rounded, AppColors.warning);
-
-  const SnackType(this.icon, this.color);
-  final IconData icon;
-  final Color color;
 }
 
 class _HeaderHero extends StatelessWidget {

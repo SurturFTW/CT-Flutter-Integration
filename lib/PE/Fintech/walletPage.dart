@@ -5,7 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
 import 'bill_payment_page.dart';
 import 'rewards_page.dart';
-import '../../main.dart';
+
+import '../../config/app_colors.dart';
+import '../../config/app_enums.dart';
 
 class TrueMoneyPage extends StatefulWidget {
   const TrueMoneyPage({super.key});
