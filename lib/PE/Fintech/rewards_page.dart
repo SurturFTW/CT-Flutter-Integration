@@ -39,10 +39,6 @@ class _RewardsPageState extends State<RewardsPage>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..forward();
-
-    CleverTapPlugin.recordEvent('Rewards Page Viewed', {
-      'Current Points': _currentPoints,
-    });
   }
 
   @override
@@ -299,10 +295,6 @@ class _RewardsPageState extends State<RewardsPage>
                   onPressed: canRedeem
                       ? () {
                           HapticFeedback.heavyImpact();
-                          CleverTapPlugin.recordEvent('Reward Redeemed', {
-                            'Item': option['title'],
-                            'Points': option['points'],
-                          });
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text('${option['title']} redeemed!'),

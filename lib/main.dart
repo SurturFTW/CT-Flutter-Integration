@@ -224,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void _login() async {
     try {
       CleverTapPlugin.onUserLogin(profile);
-      final ctId = await CleverTapPlugin.getCleverTapID();
+      var ctId = await CleverTapPlugin.getCleverTapID();
       setState(() {
         _isLoggedIn = true;
         _cleverTapId = ctId;

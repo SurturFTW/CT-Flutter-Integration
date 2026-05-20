@@ -35,7 +35,6 @@ class _BillPaymentPageState extends State<BillPaymentPage> {
   @override
   void initState() {
     super.initState();
-    CleverTapPlugin.recordEvent('Bill Payment Page Viewed', {});
   }
 
   @override
@@ -235,12 +234,6 @@ class _BillPaymentPageState extends State<BillPaymentPage> {
             );
             return;
           }
-
-          CleverTapPlugin.recordEvent('Bill Payment Initiated', {
-            'Bill Type': _selectedBillType,
-            'Amount': _amountController.text,
-            'Auto Payment': _enableAutoPayment,
-          });
 
           HapticFeedback.heavyImpact();
 
