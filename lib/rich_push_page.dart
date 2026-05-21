@@ -1,6 +1,7 @@
 import 'package:clevertap_plugin/clevertap_plugin.dart';
 import 'package:flutter/material.dart';
-import 'main.dart';
+import 'config/app_colors.dart';
+import 'config/app_enums.dart';
 
 class RichPushPage extends StatefulWidget {
   const RichPushPage({super.key});
@@ -375,6 +376,34 @@ class _RichPushPageState extends State<RichPushPage> {
                   ),
                   const SizedBox(height: 24),
 
+                  // Product Templates Section
+                  _buildSectionHeader(
+                    label: 'Product Templates',
+                    icon: Icons.shopping_bag_outlined,
+                    iconColor: AppColors.lime,
+                  ),
+                  const SizedBox(height: 10),
+                  GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    children: [
+                      _buildActionCard(
+                        onPressed: () => _triggerRichPushEvent(
+                          "Product Display Push",
+                          "Product display push triggered",
+                        ),
+                        icon: Icons.local_offer_rounded,
+                        label: 'Product Display',
+                        subtitle: 'Product showcase template',
+                        color: AppColors.lime,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+
                   // Deep Link Templates Section
                   _buildSectionHeader(
                     label: 'Deep Link Templates',
@@ -449,37 +478,19 @@ class _RichPushPageState extends State<RichPushPage> {
                         subtitle: 'Opens calendar app',
                         color: AppColors.amber,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Product Templates Section
-                  _buildSectionHeader(
-                    label: 'Product Templates',
-                    icon: Icons.shopping_bag_outlined,
-                    iconColor: AppColors.lime,
-                  ),
-                  const SizedBox(height: 10),
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    children: [
                       _buildActionCard(
                         onPressed: () => _triggerRichPushEvent(
-                          "Product Display Push",
-                          "Product display push triggered",
+                          "Website Push",
+                          "Website deep link push triggered",
                         ),
-                        icon: Icons.local_offer_rounded,
-                        label: 'Product Display',
-                        subtitle: 'Product showcase template',
+                        icon: Icons.web,
+                        label: 'Website',
+                        subtitle: 'Opens website',
                         color: AppColors.lime,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
