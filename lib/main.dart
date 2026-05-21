@@ -184,7 +184,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     });
   }
 
-  void _handleDeepLink(String deepLink, {bool isFromPush = false}) {
+  void _handleDeepLink(String deepLink) {
     debugPrint("Deep link received: $deepLink");
     if (mounted) {
       _showAppSnackBar(
@@ -224,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void _login() async {
     try {
       CleverTapPlugin.onUserLogin(profile);
-      var ctId = await CleverTapPlugin.getCleverTapID();
+      final ctId = await CleverTapPlugin.getCleverTapID();
       setState(() {
         _isLoggedIn = true;
         _cleverTapId = ctId;
@@ -799,7 +799,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         subtitle: 'Coming soon',
                         icon: Icons.upcoming_outlined,
                         color: AppColors.accent,
-                        onTap: _navigateToOTTPage,
+                        onTap: () {
+                          _showAppSnackBar(
+                            message:
+                                "More product experience demos coming soon!",
+                            type: SnackType.info,
+                          );
+                        },
                         trailing: const Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 12,
@@ -819,7 +825,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   Widget _buildSliverAppBar() {
     return SliverAppBar(
-      expandedHeight: 120,
+      expandedHeight: 150,
       pinned: true,
       stretch: true,
       backgroundColor: AppColors.midnight,
@@ -904,10 +910,21 @@ class _HeaderHero extends StatelessWidget {
           Row(
             children: [
               // Logo - from assets
-              Image.asset(
-                'logo.png',
+              Container(
                 width: 44,
                 height: 44,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: AppColors.borderSubtle,
+                    width: 0.5,
+                  ),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Image.asset(
+                  'logo.png',
+                  fit: BoxFit.cover,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -924,7 +941,7 @@ class _HeaderHero extends StatelessWidget {
                       ),
                     ),
                     const Text(
-                      'Flutter Integration Demo',
+                      'Demo Application',
                       style: TextStyle(
                         color: AppColors.textSecondary,
                         fontSize: 13,
