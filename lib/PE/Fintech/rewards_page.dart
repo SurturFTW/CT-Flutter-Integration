@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:clevertap_plugin/clevertap_plugin.dart';
 import 'package:flutter/services.dart';
 
 class RewardsPage extends StatefulWidget {

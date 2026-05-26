@@ -238,8 +238,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     }
   }
 
-  void localAlertPushPrimer() {
-    setState(() async {
+  void localAlertPushPrimer() async {
+    try {
       bool? enabled =
           await CleverTapPlugin.getPushNotificationPermissionStatus();
       if (enabled == null) return;
@@ -258,7 +258,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         _showAppSnackBar(
             message: "Push already enabled", type: SnackType.success);
       }
-    });
+    } catch (e) {
+      _showAppSnackBar(message: "Error: $e", type: SnackType.error);
+    }
   }
 
   void _getCTID() async {
