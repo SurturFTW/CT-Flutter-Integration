@@ -22,6 +22,7 @@ import 'secondPage.dart';
 
 import 'PE/Fintech/walletPage.dart';
 import 'PE/OTT/OTTPage.dart';
+import 'PE/Health/onsurity_page.dart';
 
 // ENTRY POINT
 void main() async {
@@ -465,6 +466,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     Navigator.of(context).push(_premiumRoute(const OTTPage()));
   }
 
+  void _navigateToHealthPage() {
+    Navigator.of(context).push(_premiumRoute(const OnsurityPage()));
+  }
+
   void _markDisplayUnitAsViewed(String unitId) {
     CleverTapPlugin.pushDisplayUnitViewedEvent(unitId);
     _showAppSnackBar(message: "Unit viewed: $unitId", type: SnackType.info);
@@ -790,6 +795,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                         icon: Icons.movie_outlined,
                         color: AppColors.accent,
                         onTap: _navigateToOTTPage,
+                        trailing: const Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 12,
+                          color: AppColors.textTertiary,
+                        ),
+                      ),
+                      _ActionTileData(
+                        label: 'Health PE',
+                        subtitle: 'Health product experience demo',
+                        icon: Icons.health_and_safety_outlined,
+                        color: AppColors.accent,
+                        onTap: _navigateToHealthPage,
                         trailing: const Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 12,
