@@ -49,3 +49,4 @@ android/app/google-services.json
 DEMO_GUIDE.md
 ios/Podfile.lock
 
+lib/detail.dart
