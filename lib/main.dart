@@ -24,6 +24,12 @@ import 'PE/Fintech/walletPage.dart';
 import 'PE/OTT/OTTPage.dart';
 import 'PE/Health/onsurity_page.dart';
 
+import 'widgets/premium_dialog.dart';
+import 'tabs/profile_tab.dart';
+import 'tabs/events_tab.dart';
+import 'tabs/tools_tab.dart';
+import 'tabs/product_experiences_tab.dart';
+
 // ENTRY POINT
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -105,7 +111,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with TickerProviderStateMixin {
   static const platform = MethodChannel('myChannel');
 
   // Profile data
@@ -120,23 +127,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List<Map<String, dynamic>> _displayUnits = [];
   bool _hasDisplayUnits = false;
 
-  // Animation controllers
-  late AnimationController _headerController;
+  // Top tab navigation: Profile / Events / Tools / Product Experiences
+  late TabController _tabController;
+
+  // Pulsing status dot shown on the Profile tab's identity card
   late AnimationController _pulseController;
-  late Animation<double> _headerFade;
-  late Animation<Offset> _headerSlide;
   late Animation<double> _pulseAnim;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 4, vsync: this);
     _setupAnimations();
     _initializeCleverTap();
     _listenToMethodChannelLinks();
     CleverTapPlugin.resumeInAppNotifications();
-
-    // Trigger header animation on load
-    _headerController.forward();
 
     Future.delayed(const Duration(seconds: 8), () {
       CleverTapPlugin.recordEvent("Page Viewed", {});
@@ -144,26 +149,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   void _setupAnimations() {
-    _headerController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1800),
       vsync: this,
     )..repeat(reverse: true);
 
-    _headerFade = CurvedAnimation(
-      parent: _headerController,
-      curve: Curves.easeOut,
-    );
-    _headerSlide = Tween<Offset>(
-      begin: const Offset(0, -0.08),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _headerController,
-      curve: Curves.easeOutCubic,
-    ));
     _pulseAnim = Tween<double>(begin: 0.4, end: 1.0).animate(
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
@@ -171,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _headerController.dispose();
+    _tabController.dispose();
     _pulseController.dispose();
     super.dispose();
   }
@@ -510,7 +500,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     showDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.7),
-      builder: (ctx) => _PremiumDialog(
+      builder: (ctx) => PremiumDialog(
         title: 'Sample Popup',
         message:
             'This is how a production-grade popup looks in your CleverTap demo app.',
@@ -568,829 +558,94 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.midnight,
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          _buildSliverAppBar(),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (_hasDisplayUnits) ...[
-                    const SizedBox(height: 8),
-                    _DisplayUnitsBanner(count: _displayUnits.length),
-                  ],
-                  const SizedBox(height: 28),
-                  _buildSection(
-                    label: 'Authentication',
-                    icon: Icons.shield_outlined,
-                    iconColor: AppColors.accent,
-                    tiles: [
-                      _ActionTileData(
-                        label: _isLoggedIn ? 'Re-login' : 'Login',
-                        subtitle: _isLoggedIn
-                            ? 'ID: ${_cleverTapId ?? '…'}'
-                            : 'Set identity & profile',
-                        icon: Icons.fingerprint_rounded,
-                        color: AppColors.accent,
-                        onTap: _login,
-                      ),
-                      _ActionTileData(
-                        label: 'Push Primer',
-                        subtitle: 'Request notification access',
-                        icon: Icons.notifications_outlined,
-                        color: AppColors.violet,
-                        onTap: localAlertPushPrimer,
-                      ),
-                      _ActionTileData(
-                        label: 'Get CT ID',
-                        subtitle: 'Get CleverTap ID for this device',
-                        icon: Icons.perm_identity_outlined,
-                        color: AppColors.violet,
-                        onTap: _getCTID,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    label: 'Events',
-                    icon: Icons.bolt_outlined,
-                    iconColor: AppColors.amber,
-                    tiles: [
-                      _ActionTileData(
-                        label: 'Notification Event',
-                        subtitle: 'Fire a notification trigger',
-                        icon: Icons.notifications_active_outlined,
-                        color: AppColors.amber,
-                        onTap: _recordNotificationEvent,
-                      ),
-                      _ActionTileData(
-                        label: 'Product Viewed',
-                        subtitle: 'Premium Plan — PROD_123',
-                        icon: Icons.storefront_outlined,
-                        color: AppColors.emerald,
-                        onTap: _recordPushEvent,
-                      ),
-                      _ActionTileData(
-                        label: 'In-App Event',
-                        subtitle: 'Trigger an in-app campaign',
-                        icon: Icons.phone_iphone_rounded,
-                        color: AppColors.violet,
-                        onTap: _recordInAppEvent,
-                      ),
-                      _ActionTileData(
-                        label: 'Charged Event',
-                        subtitle: '₹498 — credit card, INR',
-                        icon: Icons.receipt_long_outlined,
-                        color: AppColors.teal,
-                        onTap: _recordChargedEvent,
-                      ),
-                      _ActionTileData(
-                          label: 'Deep Link',
-                          subtitle: 'Open deep link page',
-                          icon: Icons.link,
-                          color: AppColors.pink,
-                          onTap: _secondPage)
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    label: 'Campaigns',
-                    icon: Icons.campaign_outlined,
-                    iconColor: AppColors.sky,
-                    tiles: [
-                      _ActionTileData(
-                        label: 'Email Campaign',
-                        subtitle: 'Heart rate health event',
-                        icon: Icons.mail_outline_rounded,
-                        color: AppColors.sky,
-                        onTap: _emailEvent,
-                      ),
-                      _ActionTileData(
-                        label: 'Rich Push',
-                        subtitle: 'Media-rich notification',
-                        icon: Icons.circle_notifications_outlined,
-                        color: AppColors.rose,
-                        onTap: _richPushEvent,
-                      ),
-                      _ActionTileData(
-                        label: 'Linked Content',
-                        subtitle: 'Dynamic content fetch',
-                        icon: Icons.link_rounded,
-                        color: AppColors.lime,
-                        onTap: _linkedContent,
-                      ),
-                      _ActionTileData(
-                        label: 'Medical Condition',
-                        subtitle: 'POP Remove Cart event',
-                        icon: Icons.medical_services_outlined,
-                        color: AppColors.coral,
-                        onTap: _medicalCondition,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    label: 'Display & Inbox',
-                    icon: Icons.dashboard_outlined,
-                    iconColor: AppColors.pink,
-                    tiles: [
-                      _ActionTileData(
-                        label: 'App Inbox',
-                        subtitle: 'Open message center',
-                        icon: Icons.inbox_outlined,
-                        color: AppColors.teal,
-                        onTap: _openInbox,
-                      ),
-                      _ActionTileData(
-                        label: 'Native Display',
-                        subtitle: 'Render display units natively',
-                        icon: Icons.display_settings_outlined,
-                        color: AppColors.violet,
-                        onTap: _recordNativeDisplayEvent,
-                      ),
-                      _ActionTileData(
-                        label: 'Get Display Units',
-                        subtitle: 'Fetch & cache all units',
-                        icon: Icons.view_list_outlined,
-                        color: AppColors.pink,
-                        onTap: _getAllDisplayUnits,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    label: 'Navigation',
-                    icon: Icons.explore_outlined,
-                    iconColor: AppColors.emerald,
-                    tiles: [
-                      _ActionTileData(
-                        label: 'Native Display Page',
-                        subtitle: 'Browse display unit gallery',
-                        icon: Icons.open_in_new_rounded,
-                        color: AppColors.coral,
-                        onTap: _navigateToNativeDisplayPage,
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                      _ActionTileData(
-                        label: 'Custom HTML Page',
-                        subtitle: 'WebView with custom markup',
-                        icon: Icons.code_rounded,
-                        color: AppColors.rose,
-                        onTap: _navigateToCustomHTMLPage,
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                      _ActionTileData(
-                        label: 'Rich Push Templates',
-                        subtitle: 'Push notifications with media',
-                        icon: Icons.notifications_active_outlined,
-                        color: AppColors.rose,
-                        onTap: _navigateToRichPushPage,
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                      _ActionTileData(
-                        label: 'Show Popup',
-                        subtitle: 'Example dialog with actions',
-                        icon: Icons.auto_awesome_outlined,
-                        color: AppColors.amber,
-                        onTap: _showExamplePopup,
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  _buildSection(
-                    label: 'Product Experiences',
-                    icon: Icons.star_outline_rounded,
-                    iconColor: AppColors.emerald,
-                    tiles: [
-                      _ActionTileData(
-                        label: 'FinTech PE',
-                        subtitle: 'Fintech product experience demo',
-                        icon: Icons.account_balance_wallet_outlined,
-                        color: AppColors.accent,
-                        onTap: _navigateToTrueMoneyPage,
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                      _ActionTileData(
-                        label: 'OTT PE',
-                        subtitle: 'OTT product experience demo',
-                        icon: Icons.movie_outlined,
-                        color: AppColors.accent,
-                        onTap: _navigateToOTTPage,
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                      _ActionTileData(
-                        label: 'Health PE',
-                        subtitle: 'Health product experience demo',
-                        icon: Icons.health_and_safety_outlined,
-                        color: AppColors.accent,
-                        onTap: _navigateToHealthPage,
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                      _ActionTileData(
-                        label: 'More PE Demos',
-                        subtitle: 'Coming soon',
-                        icon: Icons.upcoming_outlined,
-                        color: AppColors.accent,
-                        onTap: () {
-                          _showAppSnackBar(
-                            message:
-                                "More product experience demos coming soon!",
-                            type: SnackType.info,
-                          );
-                        },
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          size: 12,
-                          color: AppColors.textTertiary,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSliverAppBar() {
-    return SliverAppBar(
-      expandedHeight: 150,
-      pinned: true,
-      stretch: true,
-      backgroundColor: AppColors.midnight,
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [StretchMode.zoomBackground],
-        background: FadeTransition(
-          opacity: _headerFade,
-          child: SlideTransition(
-            position: _headerSlide,
-            child: _HeaderHero(
-              isLoggedIn: _isLoggedIn,
-              cleverTapId: _cleverTapId,
-              pulseAnim: _pulseAnim,
-            ),
+      appBar: AppBar(
+        backgroundColor: AppColors.midnight,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: const Text(
+          'CleverTap SDK Demo',
+          style: TextStyle(
+            color: AppColors.textPrimary,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.4,
           ),
         ),
-        titlePadding: const EdgeInsets.fromLTRB(20, 0, 20, 14),
-      ),
-    );
-  }
-
-  Widget _buildSection({
-    required String label,
-    required IconData icon,
-    required Color iconColor,
-    required List<_ActionTileData> tiles,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _SectionHeader(label: label, icon: icon, iconColor: iconColor),
-        const SizedBox(height: 10),
-        Container(
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.borderSubtle),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Column(
-            children: [
-              for (int i = 0; i < tiles.length; i++) ...[
-                _ActionListTile(data: tiles[i]),
-                if (i < tiles.length - 1)
-                  const Divider(
-                    height: 1,
-                    thickness: 0.5,
-                    color: AppColors.borderSubtle,
-                    indent: 56,
-                  ),
-              ],
-            ],
-          ),
+        bottom: TabBar(
+          controller: _tabController,
+          indicatorColor: AppColors.accent,
+          indicatorWeight: 3,
+          labelColor: AppColors.textPrimary,
+          unselectedLabelColor: AppColors.textTertiary,
+          labelStyle:
+              const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+          unselectedLabelStyle:
+              const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+          tabs: const [
+            Tab(
+              icon: Icon(Icons.person_outline_rounded, size: 20),
+              text: 'Profile',
+            ),
+            Tab(
+              icon: Icon(Icons.bolt_outlined, size: 20),
+              text: 'Events',
+            ),
+            Tab(
+              icon: Icon(Icons.build_outlined, size: 20),
+              text: 'Tools',
+            ),
+            Tab(
+              icon: Icon(Icons.star_outline_rounded, size: 20),
+              text: 'Product',
+            ),
+          ],
         ),
-      ],
-    );
-  }
-}
-
-class _HeaderHero extends StatelessWidget {
-  const _HeaderHero({
-    required this.isLoggedIn,
-    required this.cleverTapId,
-    required this.pulseAnim,
-  });
-
-  final bool isLoggedIn;
-  final String? cleverTapId;
-  final Animation<double> pulseAnim;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
-      decoration: const BoxDecoration(
-        color: AppColors.midnight,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.end,
+      body: TabBarView(
+        controller: _tabController,
         children: [
-          Row(
-            children: [
-              // Logo - from assets
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: AppColors.borderSubtle,
-                    width: 0.5,
-                  ),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Image.asset(
-                  'logo.png',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'CleverTap SDK',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: -0.6,
-                      ),
-                    ),
-                    const Text(
-                      'Demo Application',
-                      style: TextStyle(
-                        color: AppColors.textSecondary,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Status badge
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 400),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: isLoggedIn
-                      ? AppColors.successDim
-                      : AppColors.borderSubtle,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isLoggedIn
-                        ? AppColors.success.withOpacity(0.4)
-                        : AppColors.borderDefault,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnimatedBuilder(
-                      animation: pulseAnim,
-                      builder: (_, __) => Opacity(
-                        opacity: isLoggedIn ? pulseAnim.value : 0.5,
-                        child: Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: isLoggedIn
-                                ? AppColors.success
-                                : AppColors.textTertiary,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      isLoggedIn ? 'Active' : 'Guest',
-                      style: TextStyle(
-                        color: isLoggedIn
-                            ? AppColors.success
-                            : AppColors.textTertiary,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+          ProfileTab(
+            isLoggedIn: _isLoggedIn,
+            cleverTapId: _cleverTapId,
+            pulseAnim: _pulseAnim,
+            onLogin: _login,
+            onPushPrimer: localAlertPushPrimer,
+            onGetCtId: _getCTID,
           ),
-          if (isLoggedIn && cleverTapId != null) ...[
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.accentDim,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.accent.withOpacity(0.25)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.key_rounded,
-                      size: 13, color: AppColors.accentSoft),
-                  const SizedBox(width: 6),
-                  Text(
-                    'CT ID: $cleverTapId',
-                    style: const TextStyle(
-                      color: AppColors.accentSoft,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'monospace',
-                      letterSpacing: 0.4,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-// ── Section Header ───────────────────────────
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({
-    required this.label,
-    required this.icon,
-    required this.iconColor,
-  });
-
-  final String label;
-  final IconData icon;
-  final Color iconColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 14, color: iconColor),
-        const SizedBox(width: 7),
-        Text(
-          label.toUpperCase(),
-          style: const TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.8,
+          EventsTab(
+            onNotificationEvent: _recordNotificationEvent,
+            onProductViewed: _recordPushEvent,
+            onInAppEvent: _recordInAppEvent,
+            onChargedEvent: _recordChargedEvent,
+            onDeepLink: _secondPage,
           ),
-        ),
-      ],
-    );
-  }
-}
-
-// ── Action Tile Data ─────────────────────────
-
-class _ActionTileData {
-  const _ActionTileData({
-    required this.label,
-    required this.subtitle,
-    required this.icon,
-    required this.color,
-    required this.onTap,
-    this.trailing,
-  });
-
-  final String label;
-  final String subtitle;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-  final Widget? trailing;
-}
-
-class _ActionListTile extends StatefulWidget {
-  const _ActionListTile({required this.data});
-  final _ActionTileData data;
-
-  @override
-  State<_ActionListTile> createState() => _ActionListTileState();
-}
-
-class _ActionListTileState extends State<_ActionListTile> {
-  bool _pressed = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final d = widget.data;
-    return GestureDetector(
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) {
-        setState(() => _pressed = false);
-        d.onTap();
-      },
-      onTapCancel: () => setState(() => _pressed = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
-        color: _pressed ? AppColors.surfaceHighlight : Colors.transparent,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-        child: Row(
-          children: [
-            // Icon container
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: d.color.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
-                d.icon,
-                size: 18,
-                color: d.color,
-              ),
-            ),
-            const SizedBox(width: 14),
-            // Labels
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    d.label,
-                    style: const TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: -0.2,
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  Text(
-                    d.subtitle,
-                    style: const TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            if (d.trailing != null) ...[
-              const SizedBox(width: 8),
-              d.trailing!,
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Display Units Banner ─────────────────────
-
-class _DisplayUnitsBanner extends StatelessWidget {
-  const _DisplayUnitsBanner({required this.count});
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.tealDim,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.teal.withOpacity(0.25)),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.campaign_rounded, size: 16, color: AppColors.teal),
-          const SizedBox(width: 8),
-          Text(
-            '$count active display unit${count == 1 ? '' : 's'}',
-            style: const TextStyle(
-              color: AppColors.teal,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
+          ToolsTab(
+            hasDisplayUnits: _hasDisplayUnits,
+            displayUnitsCount: _displayUnits.length,
+            onEmailCampaign: _emailEvent,
+            onRichPush: _richPushEvent,
+            onLinkedContent: _linkedContent,
+            onMedicalCondition: _medicalCondition,
+            onOpenInbox: _openInbox,
+            onNativeDisplayEvent: _recordNativeDisplayEvent,
+            onGetDisplayUnits: _getAllDisplayUnits,
+            onNavigateNativeDisplayPage: _navigateToNativeDisplayPage,
+            onNavigateCustomHtmlPage: _navigateToCustomHTMLPage,
+            onNavigateRichPushPage: _navigateToRichPushPage,
+            onShowPopup: _showExamplePopup,
           ),
-          const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-            decoration: BoxDecoration(
-              color: AppColors.teal.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              'LIVE',
-              style: const TextStyle(
-                color: AppColors.teal,
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.6,
-              ),
-            ),
+          ProductExperiencesTab(
+            onFintech: _navigateToTrueMoneyPage,
+            onOtt: _navigateToOTTPage,
+            onHealth: _navigateToHealthPage,
+            onMore: () {
+              _showAppSnackBar(
+                message: "More product experience demos coming soon!",
+                type: SnackType.info,
+              );
+            },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _PremiumDialog extends StatelessWidget {
-  const _PremiumDialog({
-    required this.title,
-    required this.message,
-    required this.icon,
-    required this.iconColor,
-    this.onAction,
-    this.actionLabel = 'Confirm',
-    this.onDismiss,
-  });
-
-  final String title;
-  final String message;
-  final IconData icon;
-  final Color iconColor;
-  final VoidCallback? onAction;
-  final String actionLabel;
-  final VoidCallback? onDismiss;
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: AppColors.surfaceElevated,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: const BorderSide(color: AppColors.borderDefault),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Icon + close
-            Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: iconColor.withOpacity(0.12),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, color: iconColor, size: 22),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    onDismiss?.call();
-                  },
-                  child: Container(
-                    width: 30,
-                    height: 30,
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceHighlight,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: AppColors.borderSubtle),
-                    ),
-                    child: const Icon(
-                      Icons.close_rounded,
-                      size: 15,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: const TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.4,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              message,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 14,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      onDismiss?.call();
-                    },
-                    child: Container(
-                      height: 44,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceHighlight,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppColors.borderDefault),
-                      ),
-                      child: const Text(
-                        'Dismiss',
-                        style: TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (onAction != null) ...[
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        onAction?.call();
-                      },
-                      child: Container(
-                        height: 44,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [
-                              Color(0xFF8B84FF),
-                              Color(0xFF6C63FF),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          actionLabel,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }
