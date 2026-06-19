@@ -400,7 +400,7 @@ class _CustomHtmlPageState extends State<CustomHtmlPage> {
                       ),
                       _buildActionCard(
                         onPressed: () => _triggerEvent(
-                          "Native Scratch Card",
+                          "GFT Category Navigation Clicked",
                           "Native Scratch Card triggered",
                         ),
                         icon: Icons.screen_search_desktop_rounded,
