@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'dart:math';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -13,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'config/app_colors.dart';
 import 'config/app_theme.dart';
 import 'config/app_enums.dart';
+import 'services/clevertap_service.dart';
 
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
@@ -24,7 +24,6 @@ import 'PE/Fintech/walletPage.dart';
 import 'PE/OTT/OTTPage.dart';
 import 'PE/Health/onsurity_page.dart';
 
-import 'widgets/premium_dialog.dart';
 import 'tabs/profile_tab.dart';
 import 'tabs/events_tab.dart';
 import 'tabs/tools_tab.dart';
@@ -111,15 +110,8 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage>
-    with TickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   static const platform = MethodChannel('myChannel');
-
-  // Profile data
-  final Map<String, dynamic> profile = {
-    'Identity': '787',
-    'Phone': '+91123456789',
-  };
 
   // State
   bool _isLoggedIn = false;
@@ -186,21 +178,11 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   void _initializeCleverTap() {
-    CleverTapPlugin clevertapPlugin = CleverTapPlugin();
-
-    CleverTapPlugin.createNotificationChannel(
-        "test", "Test Channel", "Channel for push notifications", 3, true);
-    CleverTapPlugin.setDebugLevel(3);
-
-    if (!kIsWeb) CleverTapPlugin.registerForPush();
-
-    clevertapPlugin.setCleverTapPushClickedPayloadReceivedHandler(
-        pushClickedPayloadReceived);
-    clevertapPlugin.setCleverTapInboxDidInitializeHandler(_inboxDidInitialize);
-    clevertapPlugin.setCleverTapInAppNotificationButtonClickedHandler((map) {
-      debugPrint("inAppNotificationButtonClicked: ${map.toString()}");
-    });
-    clevertapPlugin.setCleverTapDisplayUnitsLoadedHandler(onDisplayUnitsLoaded);
+    CleverTapService().initialize(
+      onDisplayUnitsLoaded: onDisplayUnitsLoaded,
+      onInboxInitialized: _inboxDidInitialize,
+      onPushClicked: pushClickedPayloadReceived,
+    );
   }
 
   List<Map<String, dynamic>> _convertToMapList(List<dynamic>? data) {
@@ -212,10 +194,9 @@ class _MyHomePageState extends State<MyHomePage>
     }).toList();
   }
 
-  void _login() async {
+  void _login(Map<String, dynamic> profileData) async {
     try {
-      CleverTapPlugin.onUserLogin(profile);
-      final ctId = await CleverTapPlugin.getCleverTapID();
+      final ctId = await CleverTapService().login(profileData);
       setState(() {
         _isLoggedIn = true;
         _cleverTapId = ctId;
@@ -229,130 +210,12 @@ class _MyHomePageState extends State<MyHomePage>
     }
   }
 
-  void localAlertPushPrimer() async {
-    try {
-      bool? enabled =
-          await CleverTapPlugin.getPushNotificationPermissionStatus();
-      if (enabled == null) return;
-      if (!enabled) {
-        CleverTapPlugin.promptPushPrimer({
-          'inAppType': 'alert',
-          'titleText': 'Get Notified',
-          'messageText': 'Enable Notification permission',
-          'followDeviceOrientation': true,
-          'positiveBtnText': 'Allow',
-          'negativeBtnText': 'Cancel',
-          'fallbackToSettings': true,
-        });
-        _showAppSnackBar(message: "Push primer shown", type: SnackType.info);
-      } else {
-        _showAppSnackBar(
-            message: "Push already enabled", type: SnackType.success);
-      }
-    } catch (e) {
-      _showAppSnackBar(message: "Error: $e", type: SnackType.error);
-    }
-  }
-
-  void _getCTID() async {
-    final ctId = await CleverTapPlugin.getCleverTapID();
-    _showAppSnackBar(
-      message: "CleverTap ID: ${ctId ?? 'N/A'}",
-      type: SnackType.info,
-    );
-    debugPrint("CleverTap ID: $ctId");
-  }
-
-  void _recordNotificationEvent() {
-    try {
-      CleverTapPlugin.recordEvent("Notification Event", {});
-      _showAppSnackBar(
-          message: "Notification event fired", type: SnackType.success);
-    } catch (e) {
-      _showAppSnackBar(message: "Error: $e", type: SnackType.error);
-    }
-  }
-
-  void _recordPushEvent() {
-    try {
-      CleverTapPlugin.recordEvent("Product Viewed", {
-        'product_id': 'PROD_123',
-        'product_name': 'Premium Plan',
-        'category': 'subscription',
-      });
-      _showAppSnackBar(
-          message: "Product Viewed event fired", type: SnackType.success);
-    } catch (e) {
-      _showAppSnackBar(message: "Error: $e", type: SnackType.error);
-    }
-  }
-
-  void _recordInAppEvent() {
-    try {
-      CleverTapPlugin.recordEvent("In-App Event", {});
-      _showAppSnackBar(message: "In-App event fired", type: SnackType.success);
-    } catch (e) {
-      _showAppSnackBar(message: "Error: $e", type: SnackType.error);
-    }
-  }
-
-  void _recordChargedEvent() {
-    try {
-      var item1 = {
-        'name': 'Premium Subscription',
-        'amount': '299',
-        'category': 'digital'
-      };
-      var item2 = {
-        'name': 'Extra Features',
-        'amount': '199',
-        'category': 'addon'
-      };
-      CleverTapPlugin.recordChargedEvent({
-        'total': '498',
-        'payment': 'credit_card',
-        'currency': 'INR',
-        'transaction_id': 'TXN_${DateTime.now().millisecondsSinceEpoch}',
-      }, [
-        item1,
-        item2
-      ]);
-      _showAppSnackBar(
-          message: "Charged ₹498 — event fired", type: SnackType.success);
-    } catch (e) {
-      _showAppSnackBar(message: "Error: $e", type: SnackType.error);
-    }
-  }
-
   void _secondPage() {
     Navigator.of(context).push(_premiumRoute(const DeepLinkPage(
       type: '',
       title: '',
       message: '',
     )));
-  }
-
-  void _emailEvent() {
-    final hr = 50 + Random().nextInt(51);
-    CleverTapPlugin.recordEvent("Health", {"Heart Rate": hr});
-    _showAppSnackBar(
-        message: "Health event — HR: $hr bpm", type: SnackType.success);
-  }
-
-  void _linkedContent() {
-    CleverTapPlugin.recordEvent("android Purchase", {});
-    _showAppSnackBar(
-        message: "Linked content event fired", type: SnackType.success);
-  }
-
-  void _richPushEvent() {
-    CleverTapPlugin.recordEvent("Rich Push", {});
-    _showAppSnackBar(message: "Rich Push event fired", type: SnackType.success);
-  }
-
-  void _medicalCondition() {
-    CleverTapPlugin.recordEvent("POP Remove Cart", {});
-    _showAppSnackBar(message: "POP Remove Cart fired", type: SnackType.success);
   }
 
   // ── Display ─────────────────────────────────
@@ -409,22 +272,6 @@ class _MyHomePageState extends State<MyHomePage>
         _displayUnits.addAll(_convertToMapList(displayUnits));
         _hasDisplayUnits = true;
       });
-    }
-  }
-
-  void _openInbox() {
-    try {
-      CleverTapPlugin.showInbox({
-        'noMessageTextColor': '#9092AE',
-        'noMessageText': 'No messages yet.',
-        'navBarTitle': 'Inbox',
-        'navBarTitleColor': '#F0EFFF',
-        'navBarColor': '#10111C',
-        'inboxBackgroundColor': '#080910',
-      });
-      _showAppSnackBar(message: "Opening inbox…", type: SnackType.info);
-    } catch (e) {
-      _showAppSnackBar(message: "Error: $e", type: SnackType.error);
     }
   }
 
@@ -492,28 +339,6 @@ class _MyHomePageState extends State<MyHomePage>
           ),
         );
       },
-    );
-  }
-
-  void _showExamplePopup() {
-    CleverTapPlugin.suspendInAppNotifications();
-    showDialog(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.7),
-      builder: (ctx) => PremiumDialog(
-        title: 'Sample Popup',
-        message:
-            'This is how a production-grade popup looks in your CleverTap demo app.',
-        icon: Icons.auto_awesome_rounded,
-        iconColor: AppColors.accent,
-        onAction: () {
-          _showAppSnackBar(
-              message: 'Action triggered!', type: SnackType.success);
-          CleverTapPlugin.resumeInAppNotifications();
-        },
-        actionLabel: 'Got it',
-        onDismiss: () => CleverTapPlugin.resumeInAppNotifications(),
-      ),
     );
   }
 
@@ -596,7 +421,7 @@ class _MyHomePageState extends State<MyHomePage>
             ),
             Tab(
               icon: Icon(Icons.star_outline_rounded, size: 20),
-              text: 'Product',
+              text: 'Product Experiences',
             ),
           ],
         ),
@@ -609,30 +434,21 @@ class _MyHomePageState extends State<MyHomePage>
             cleverTapId: _cleverTapId,
             pulseAnim: _pulseAnim,
             onLogin: _login,
-            onPushPrimer: localAlertPushPrimer,
-            onGetCtId: _getCTID,
           ),
           EventsTab(
-            onNotificationEvent: _recordNotificationEvent,
-            onProductViewed: _recordPushEvent,
-            onInAppEvent: _recordInAppEvent,
-            onChargedEvent: _recordChargedEvent,
             onDeepLink: _secondPage,
+            hasDisplayUnits: _hasDisplayUnits,
+            displayUnitsCount: _displayUnits.length,
+            onGetDisplayUnits: _getAllDisplayUnits,
+            onNativeDisplayEvent: _recordNativeDisplayEvent,
+            onNavigateNativeDisplayPage: _navigateToNativeDisplayPage,
           ),
           ToolsTab(
             hasDisplayUnits: _hasDisplayUnits,
             displayUnitsCount: _displayUnits.length,
-            onEmailCampaign: _emailEvent,
-            onRichPush: _richPushEvent,
-            onLinkedContent: _linkedContent,
-            onMedicalCondition: _medicalCondition,
-            onOpenInbox: _openInbox,
-            onNativeDisplayEvent: _recordNativeDisplayEvent,
-            onGetDisplayUnits: _getAllDisplayUnits,
             onNavigateNativeDisplayPage: _navigateToNativeDisplayPage,
             onNavigateCustomHtmlPage: _navigateToCustomHTMLPage,
             onNavigateRichPushPage: _navigateToRichPushPage,
-            onShowPopup: _showExamplePopup,
           ),
           ProductExperiencesTab(
             onFintech: _navigateToTrueMoneyPage,
