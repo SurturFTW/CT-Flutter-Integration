@@ -135,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _listenToMethodChannelLinks();
     CleverTapPlugin.resumeInAppNotifications();
 
-    Future.delayed(const Duration(seconds: 8), () {
+    Future.delayed(const Duration(seconds: 5), () {
       CleverTapPlugin.recordEvent("Page Viewed", {});
     });
   }

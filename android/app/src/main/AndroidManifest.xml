@@ -39,33 +39,46 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-            <!-- <meta-data
+            <!-- Pushkar Dashboard -->
+            <meta-data
                 android:name="CLEVERTAP_ACCOUNT_ID"
                 android:value="TEST-865-ZRW-7K7Z"/>
             <meta-data
                 android:name="CLEVERTAP_TOKEN"
-                android:value="TEST-021-56b"/> -->
+                android:value="TEST-021-56b"/>
 
-            <!-- Time Test -->
+            <!-- Jitu Dashboard -->
             <!-- <meta-data
                 android:name="CLEVERTAP_ACCOUNT_ID"
-                android:value="TEST-8RK-55K-847Z"/>
+                android:value="75R-654-5Z6Z"/>
             <meta-data
                 android:name="CLEVERTAP_TOKEN"
-                android:value="SOM-JEB-CAEL"/> -->
+                android:value="456-25a"/> -->
+
+            <!-- Abeezer Test -->
+            <!-- <meta-data
+                android:name="CLEVERTAP_ACCOUNT_ID"
+                android:value="468-W87-546Z"/>
+            <meta-data
+                android:name="CLEVERTAP_TOKEN"
+                android:value="ab0-b64"/> -->
 
             <!-- Shreyas Dashboard for PE -->
-            <meta-data
+            <!-- <meta-data
                 android:name="CLEVERTAP_ACCOUNT_ID"
                 android:value="677-ZZ6-7K7Z"/>
             <meta-data
                 android:name="CLEVERTAP_TOKEN"
-                android:value="611-aa6"/>
+                android:value="611-aa6"/> -->
 
             <!-- IMPORTANT: To force use Google AD ID to uniquely identify  users, use the following meta tag. GDPR mandates that if you are using this tag, there is prominent disclousure to your end customer in their application. Read more about GDPR here - https://clevertap.com/blog/in-preparation-of-gdpr-compliance/ -->
             <meta-data
                 android:name="CLEVERTAP_USE_GOOGLE_AD_ID"
                 android:value="1"/>
+
+            <meta-data
+                android:name="CLEVERTAP_ENCRYPTION_LEVEL"
+                android:value="2" />
 
             <service android:name="com.clevertap.android.sdk.pushnotification.fcm.FcmMessageListenerService" android:exported="true">
                 <intent-filter>

@@ -55,6 +55,55 @@ class _ProfileTabState extends State<ProfileTab> {
     widget.onLogin(profile);
   }
 
+  void _addNestedProperty() {
+    final result = <String, dynamic>{
+      'Portfolio_Optimizer_Dashboard': {
+        'Screen_Name': 'Portfolio_Optimizer_Dashboard',
+        'Initiation_Screen': 'Dashboard',
+        'Tab_Name': 'EQ',
+        'EQ_Count': 4,
+        'MF_Count': 2,
+        'PO_Top5_Sell_all_Stocks': [
+          'LAURUS LABS LIMITED',
+          'APOLLO TYRES LTD',
+          'AMBER ENTERPRISES INDIA LTD',
+          'SBI CARDS AND PAYMENT SERVICES LTD',
+          'CIPLA LTD',
+        ],
+        'PO_Top5_Buy_all_Stocks': [
+          'Reliance Industries Ltd.',
+          'Lodha Developers Ltd.',
+          'REC Ltd',
+          'Kirloskar Pneumatic Company Ltd.',
+          'General Insurance Corporation of India',
+        ],
+        'PO_Marketcap_Largecap': {
+          'Total_Allocation': 6215008.51,
+          'Stock_Count': 35,
+          'Top_5_Stock_Name': [
+            'LTM LIMITED',
+            'MAX HEALTHCARE INSTITUTE LIMITED',
+            'TATA CONSULTANCY SERVICES LIMITED',
+            'KOTAK MAHINDRA BANK LTD',
+            'ADANI ENERGY SOLUTIONS LIMITED',
+          ],
+        },
+        'PO_Marketcap_Midcap': {
+          'Total_Allocation': 11959780.200000001,
+          'Stock_Count': 16,
+          'Top_5_Stock_Name': [
+            'INDIAN RAILWAY CATERING & TOURISM CO LTD',
+            'LAURUS LABS LIMITED',
+            'ONE 97 COMMUNICATION LTD',
+            'ABBOTT INDIA',
+            'INFO EDGE INDIA LIMITED',
+          ],
+        },
+      },
+    };
+    CleverTapService().profileSet(result);
+  }
+
   Future<void> _setProfileProperty() async {
     final result = await CtDynamicPropsDialog.show(
       context,
@@ -74,8 +123,9 @@ class _ProfileTabState extends State<ProfileTab> {
             type: SnackType.success);
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -93,12 +143,14 @@ class _ProfileTabState extends State<ProfileTab> {
     try {
       final value = await CleverTapService().profileGetProperty(result['key']!);
       debugPrint('Profile Property [${result['key']}]: $value');
-      if (mounted)
+      if (mounted) {
         ctSnack(context,
             message: '${result['key']}: $value', type: SnackType.info);
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -115,12 +167,14 @@ class _ProfileTabState extends State<ProfileTab> {
     if (result == null) return;
     try {
       CleverTapService().profileRemoveValueForKey(result['key']!);
-      if (mounted)
+      if (mounted) {
         ctSnack(context,
             message: 'Removed: ${result['key']}', type: SnackType.success);
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -146,13 +200,15 @@ class _ProfileTabState extends State<ProfileTab> {
           .where((v) => v.isNotEmpty)
           .toList();
       CleverTapService().profileSetMultiValues(result['key']!, values);
-      if (mounted)
+      if (mounted) {
         ctSnack(context,
             message: 'Set ${values.length} values for ${result['key']}',
             type: SnackType.success);
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -170,13 +226,15 @@ class _ProfileTabState extends State<ProfileTab> {
     if (result == null) return;
     try {
       CleverTapService().profileAddMultiValue(result['key']!, result['value']!);
-      if (mounted)
+      if (mounted) {
         ctSnack(context,
             message: 'Added "${result['value']}" to ${result['key']}',
             type: SnackType.success);
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -195,13 +253,15 @@ class _ProfileTabState extends State<ProfileTab> {
     try {
       CleverTapService()
           .profileRemoveMultiValue(result['key']!, result['value']!);
-      if (mounted)
+      if (mounted) {
         ctSnack(context,
             message: 'Removed "${result['value']}" from ${result['key']}',
             type: SnackType.success);
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -218,13 +278,15 @@ class _ProfileTabState extends State<ProfileTab> {
     if (result == null) return;
     try {
       CleverTapService().profileIncrementValue(result['key']!, 15);
-      if (mounted)
+      if (mounted) {
         ctSnack(context,
             message: '${result['key']} incremented by 15',
             type: SnackType.success);
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -241,13 +303,15 @@ class _ProfileTabState extends State<ProfileTab> {
     if (result == null) return;
     try {
       CleverTapService().profileDecrementValue(result['key']!, 10);
-      if (mounted)
+      if (mounted) {
         ctSnack(context,
             message: '${result['key']} decremented by 10',
             type: SnackType.success);
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -267,12 +331,14 @@ class _ProfileTabState extends State<ProfileTab> {
       final lat = double.parse(result['lat']!);
       final lng = double.parse(result['lng']!);
       CleverTapService().setLocation(lat, lng);
-      if (mounted)
+      if (mounted) {
         ctSnack(context,
             message: 'Location set: $lat, $lng', type: SnackType.success);
+      }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         ctSnack(context, message: 'Error: $e', type: SnackType.error);
+      }
     }
   }
 
@@ -302,14 +368,16 @@ class _ProfileTabState extends State<ProfileTab> {
                   try {
                     final id = await CleverTapService().getCleverTapId();
                     debugPrint('CleverTap ID: $id');
-                    if (mounted)
+                    if (mounted) {
                       ctSnack(context,
                           message: 'CT ID: ${id ?? 'N/A'}',
                           type: SnackType.info);
+                    }
                   } catch (e) {
-                    if (mounted)
+                    if (mounted) {
                       ctSnack(context,
                           message: 'Error: $e', type: SnackType.error);
+                    }
                   }
                 },
               ),
@@ -370,6 +438,13 @@ class _ProfileTabState extends State<ProfileTab> {
                 icon: Icons.remove_circle_outline_rounded,
                 color: AppColors.violet,
                 onTap: _removeMultiValue,
+              ),
+              ActionTileData(
+                label: 'Add Nested Property',
+                subtitle: 'Add a nested property to the user profile',
+                icon: Icons.add_circle_outline_rounded,
+                color: AppColors.violet,
+                onTap: _addNestedProperty,
               ),
             ],
           ),
