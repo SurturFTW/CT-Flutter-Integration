@@ -150,7 +150,7 @@ class _EventsTabState extends State<EventsTab> {
                 onTap: () {
                   try {
                     CleverTapService().recordEvent('Product Viewed', {
-                      'product_id': 'PROD_123',
+                      'Product ID': '123',
                       'product_name': 'Premium Plan',
                       'category': 'subscription',
                     });
