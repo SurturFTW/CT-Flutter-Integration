@@ -33,7 +33,7 @@ import UserNotifications
         }
 
         // CleverTap integration
-        CleverTap.setDebugLevel(CleverTapLogLevel.debug.rawValue)
+        // CleverTap.setDebugLevel(CleverTapLogLevel.debug.rawValue)
         CleverTap.autoIntegrate()
         CleverTapPlugin.sharedInstance()?.applicationDidLaunch(options: launchOptions)
 

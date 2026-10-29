@@ -49,6 +49,12 @@
 	<key>CleverTapToken</key>
 	<string>TEST-210-6bb</string> -->
 
+	<!-- Henil -->
+	<!-- <key>CleverTapAccountID</key>
+	<string>4R8-7ZK-6K7Z</string>
+	<key>CleverTapToken</key>
+	<string>31a-b24</string> -->
+
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
