@@ -55,6 +55,21 @@
 	<key>CleverTapToken</key>
 	<string>31a-b24</string> -->
 
+	<!-- Internal deep links: ctdemo://<page> -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.example.ctflutterintegration.deeplink</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>ctdemo</string>
+			</array>
+		</dict>
+	</array>
+	<key>FlutterDeepLinkingEnabled</key>
+	<false/>
+
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'services/deep_link_router.dart';
+
 /// Handles various deep link types received from push notifications
 Future<void> handleNotificationClick(
     Map<String, dynamic> notificationPayload) async {
@@ -30,7 +32,9 @@ Future<void> handleNotificationClick(
 
 /// Routes the deep link to appropriate handler based on URL scheme
 void _handleDeepLink(String deepLink) {
-  if (deepLink.startsWith('tel:')) {
+  if (DeepLinkRouter.isInternal(deepLink)) {
+    DeepLinkRouter.open(deepLink);
+  } else if (deepLink.startsWith('tel:')) {
     _handlePhoneCall(deepLink);
   } else if (deepLink.startsWith('smsto:')) {
     _handleSMS(deepLink);
