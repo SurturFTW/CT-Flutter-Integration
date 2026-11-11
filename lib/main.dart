@@ -13,6 +13,7 @@ import 'config/app_colors.dart';
 import 'config/app_theme.dart';
 import 'config/app_enums.dart';
 import 'services/clevertap_service.dart';
+import 'services/deep_link_router.dart';
 
 import 'native_display_page.dart';
 import 'custom_html_page.dart';
@@ -97,6 +98,7 @@ class MyApp extends StatelessWidget {
       title: 'CT Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
+      navigatorKey: DeepLinkRouter.navigatorKey,
       home: const MyHomePage(title: 'CT Flutter Demo'),
     );
   }
@@ -135,6 +137,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _listenToMethodChannelLinks();
     CleverTapPlugin.resumeInAppNotifications();
 
+    // Open a link that arrived before the navigator existed (killed-state push)
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => DeepLinkRouter.flushPending());
+
     Future.delayed(const Duration(seconds: 5), () {
       CleverTapPlugin.recordEvent("Page Viewed", {});
     });
@@ -169,6 +175,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   void _handleDeepLink(String deepLink) {
     debugPrint("Deep link received: $deepLink");
+    if (DeepLinkRouter.isInternal(deepLink)) {
+      DeepLinkRouter.open(deepLink);
+      return;
+    }
     if (mounted) {
       _showAppSnackBar(
         message: "Deep link: $deepLink",
