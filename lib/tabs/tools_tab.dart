@@ -6,23 +6,9 @@ import '../services/clevertap_service.dart';
 import '../utils/ct_snack.dart';
 import '../widgets/action_section.dart';
 import '../widgets/ct_input_dialog.dart';
-import '../widgets/premium_dialog.dart';
 
 class ToolsTab extends StatefulWidget {
-  const ToolsTab({
-    super.key,
-    required this.hasDisplayUnits,
-    required this.displayUnitsCount,
-    required this.onNavigateNativeDisplayPage,
-    required this.onNavigateCustomHtmlPage,
-    required this.onNavigateRichPushPage,
-  });
-
-  final bool hasDisplayUnits;
-  final int displayUnitsCount;
-  final VoidCallback onNavigateNativeDisplayPage;
-  final VoidCallback onNavigateCustomHtmlPage;
-  final VoidCallback onNavigateRichPushPage;
+  const ToolsTab({super.key});
 
   @override
   State<ToolsTab> createState() => _ToolsTabState();
@@ -451,65 +437,6 @@ class _ToolsTabState extends State<ToolsTab> {
                   } catch (e) {
                     if (mounted) ctSnack(context, message: 'Error: $e', type: SnackType.error);
                   }
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          ActionSection(
-            label: 'Navigation',
-            icon: Icons.explore_outlined,
-            iconColor: AppColors.emerald,
-            tiles: [
-              ActionTileData(
-                label: 'Native Display Page',
-                subtitle: widget.hasDisplayUnits
-                    ? '${widget.displayUnitsCount} unit(s) available'
-                    : 'Browse display unit gallery',
-                icon: Icons.open_in_new_rounded,
-                color: AppColors.coral,
-                onTap: widget.onNavigateNativeDisplayPage,
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.textTertiary),
-              ),
-              ActionTileData(
-                label: 'Custom HTML Page',
-                subtitle: 'WebView with custom markup',
-                icon: Icons.code_rounded,
-                color: AppColors.rose,
-                onTap: widget.onNavigateCustomHtmlPage,
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.textTertiary),
-              ),
-              ActionTileData(
-                label: 'Rich Push Templates',
-                subtitle: 'Push notifications with media',
-                icon: Icons.notifications_active_outlined,
-                color: AppColors.rose,
-                onTap: widget.onNavigateRichPushPage,
-                trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 12, color: AppColors.textTertiary),
-              ),
-              ActionTileData(
-                label: 'Show Popup',
-                subtitle: 'Example dialog with actions',
-                icon: Icons.auto_awesome_outlined,
-                color: AppColors.amber,
-                onTap: () {
-                  CleverTapService().suspendInAppNotifications();
-                  showDialog(
-                    context: context,
-                    barrierColor: Colors.black.withValues(alpha: 0.7),
-                    builder: (ctx) => PremiumDialog(
-                      title: 'Sample Popup',
-                      message: 'This is how a production-grade popup looks in your CleverTap demo app.',
-                      icon: Icons.auto_awesome_rounded,
-                      iconColor: AppColors.accent,
-                      onAction: () {
-                        ctSnack(context, message: 'Action triggered!', type: SnackType.success);
-                        CleverTapService().resumeInAppNotifications();
-                      },
-                      actionLabel: 'Got it',
-                      onDismiss: () => CleverTapService().resumeInAppNotifications(),
-                    ),
-                  );
                 },
               ),
             ],

@@ -121,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   List<Map<String, dynamic>> _displayUnits = [];
   bool _hasDisplayUnits = false;
 
-  // Top tab navigation: Profile / Events / Tools / Product Experiences
+  // Top tab navigation: Profile / Events / Tools / Pages
   late TabController _tabController;
 
   // Pulsing status dot shown on the Profile tab's identity card
@@ -430,8 +430,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               text: 'Tools',
             ),
             Tab(
-              icon: Icon(Icons.star_outline_rounded, size: 20),
-              text: 'Product Experiences',
+              icon: Icon(Icons.explore_outlined, size: 20),
+              text: 'Pages',
             ),
           ],
         ),
@@ -453,13 +453,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             onNativeDisplayEvent: _recordNativeDisplayEvent,
             onNavigateNativeDisplayPage: _navigateToNativeDisplayPage,
           ),
-          ToolsTab(
-            hasDisplayUnits: _hasDisplayUnits,
-            displayUnitsCount: _displayUnits.length,
-            onNavigateNativeDisplayPage: _navigateToNativeDisplayPage,
-            onNavigateCustomHtmlPage: _navigateToCustomHTMLPage,
-            onNavigateRichPushPage: _navigateToRichPushPage,
-          ),
+          ToolsTab(),
           ProductExperiencesTab(
             onFintech: _navigateToTrueMoneyPage,
             onOtt: _navigateToOTTPage,
@@ -470,6 +464,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 type: SnackType.info,
               );
             },
+            hasDisplayUnits: _hasDisplayUnits,
+            displayUnitsCount: _displayUnits.length,
+            onNavigateNativeDisplayPage: _navigateToNativeDisplayPage,
+            onNavigateCustomHtmlPage: _navigateToCustomHTMLPage,
+            onNavigateRichPushPage: _navigateToRichPushPage,
           ),
         ],
       ),
