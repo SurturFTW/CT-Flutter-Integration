@@ -11,7 +11,6 @@ class ProductExperiencesTab extends StatelessWidget {
     super.key,
     required this.onFintech,
     required this.onOtt,
-    required this.onHealth,
     required this.onMore,
     required this.hasDisplayUnits,
     required this.displayUnitsCount,
@@ -22,7 +21,6 @@ class ProductExperiencesTab extends StatelessWidget {
 
   final VoidCallback onFintech;
   final VoidCallback onOtt;
-  final VoidCallback onHealth;
   final VoidCallback onMore;
   final bool hasDisplayUnits;
   final int displayUnitsCount;
@@ -119,14 +117,6 @@ class ProductExperiencesTab extends StatelessWidget {
                 icon: Icons.movie_outlined,
                 color: AppColors.accent,
                 onTap: onOtt,
-                trailing: _arrow,
-              ),
-              ActionTileData(
-                label: 'Health PE',
-                subtitle: 'Health product experience demo',
-                icon: Icons.health_and_safety_outlined,
-                color: AppColors.accent,
-                onTap: onHealth,
                 trailing: _arrow,
               ),
               ActionTileData(

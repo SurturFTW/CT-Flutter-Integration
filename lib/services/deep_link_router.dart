@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../PE/Fintech/walletPage.dart';
-import '../PE/Health/onsurity_page.dart';
 import '../PE/OTT/OTTPage.dart';
 import '../custom_html_page.dart';
 import '../rich_push_page.dart';
@@ -61,7 +60,6 @@ class DeepLinkRouter {
         ),
       'wallet' || 'fintech' => const TrueMoneyPage(),
       'ott' => const OTTPage(),
-      'health' => const OnsurityPage(),
       'html' => const CustomHtmlPage(),
       'richpush' => const RichPushPage(),
       'home' => null,

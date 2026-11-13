@@ -23,7 +23,6 @@ import 'secondPage.dart';
 
 import 'PE/Fintech/walletPage.dart';
 import 'PE/OTT/OTTPage.dart';
-import 'PE/Health/onsurity_page.dart';
 
 import 'tabs/profile_tab.dart';
 import 'tabs/events_tab.dart';
@@ -313,10 +312,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     Navigator.of(context).push(_premiumRoute(const OTTPage()));
   }
 
-  void _navigateToHealthPage() {
-    Navigator.of(context).push(_premiumRoute(const OnsurityPage()));
-  }
-
   void _markDisplayUnitAsViewed(String unitId) {
     CleverTapPlugin.pushDisplayUnitViewedEvent(unitId);
     _showAppSnackBar(message: "Unit viewed: $unitId", type: SnackType.info);
@@ -457,7 +452,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ProductExperiencesTab(
             onFintech: _navigateToTrueMoneyPage,
             onOtt: _navigateToOTTPage,
-            onHealth: _navigateToHealthPage,
             onMore: () {
               _showAppSnackBar(
                 message: "More product experience demos coming soon!",
